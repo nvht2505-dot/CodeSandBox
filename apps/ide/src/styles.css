@@ -20,3 +20,10 @@ input, select { background: #0f172a; border: 1px solid #31415f; border-radius: 0
 .status { color: #facc15; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
 .muted { color: var(--muted); line-height: 1.55; }
 .preview { background: white; }
+.extension-grid { display: grid; gap: 0.85rem; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.extension-card { background: linear-gradient(180deg, #172033, #111827); border: 1px solid #31415f; border-radius: 1rem; padding: 1rem; }
+.extension-card span { color: #7dd3fc; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.extension-card h3 { margin: 0.45rem 0; }
+.extension-card code { color: #c4b5fd; }
+.extension-card p { color: var(--muted); line-height: 1.5; }
+.installed { background: #14532d !important; border-color: #22c55e !important; color: #bbf7d0 !important; }

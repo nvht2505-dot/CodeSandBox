@@ -1,0 +1,10 @@
+<svg width="1000" height="640" viewBox="0 0 1000 640" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1000" height="640" rx="32" fill="#101827"/>
+  <text x="54" y="74" fill="#F8FAFC" font-family="Inter,Arial" font-size="34" font-weight="800">Extension Store</text>
+  <rect x="54" y="105" width="892" height="58" rx="16" fill="#0F172A" stroke="#31415F"/>
+  <text x="80" y="142" fill="#94A3B8" font-family="Inter,Arial" font-size="20">Search React, TypeScript, UI kits, utilities...</text>
+  <g fill="#172033" stroke="#31415F"><rect x="54" y="195" width="278" height="160" rx="20"/><rect x="361" y="195" width="278" height="160" rx="20"/><rect x="668" y="195" width="278" height="160" rx="20"/><rect x="54" y="385" width="278" height="160" rx="20"/><rect x="361" y="385" width="278" height="160" rx="20"/><rect x="668" y="385" width="278" height="160" rx="20"/></g>
+  <g font-family="Inter,Arial"><text x="84" y="252" fill="#F8FAFC" font-size="24" font-weight="700">React Router</text><text x="391" y="252" fill="#F8FAFC" font-size="24" font-weight="700">Tailwind CSS</text><text x="698" y="252" fill="#F8FAFC" font-size="24" font-weight="700">Zustand</text><text x="84" y="442" fill="#F8FAFC" font-size="24" font-weight="700">Axios</text><text x="391" y="442" fill="#F8FAFC" font-size="24" font-weight="700">Lucide Icons</text><text x="698" y="442" fill="#F8FAFC" font-size="24" font-weight="700">Framer Motion</text></g>
+  <g fill="#40A9FF"><rect x="84" y="292" width="88" height="34" rx="17"/><rect x="391" y="292" width="88" height="34" rx="17"/><rect x="698" y="292" width="88" height="34" rx="17"/><rect x="84" y="482" width="88" height="34" rx="17"/><rect x="391" y="482" width="88" height="34" rx="17"/><rect x="698" y="482" width="88" height="34" rx="17"/></g>
+  <g fill="#fff" font-family="Inter,Arial" font-size="15" font-weight="700"><text x="108" y="315">Install</text><text x="415" y="315">Install</text><text x="722" y="315">Install</text><text x="108" y="505">Install</text><text x="415" y="505">Install</text><text x="722" y="505">Install</text></g>
+</svg>

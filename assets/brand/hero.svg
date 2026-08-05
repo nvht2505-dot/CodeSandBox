@@ -1,0 +1,20 @@
+<svg width="1200" height="520" viewBox="0 0 1200 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="520" rx="36" fill="#0B1020"/>
+  <circle cx="1020" cy="70" r="190" fill="#40A9FF" opacity=".22"/>
+  <circle cx="220" cy="460" r="210" fill="#7C3AED" opacity=".20"/>
+  <rect x="90" y="70" width="1020" height="380" rx="28" fill="#111827" stroke="#26324A"/>
+  <rect x="130" y="115" width="230" height="290" rx="18" fill="#172033"/>
+  <rect x="390" y="115" width="370" height="290" rx="18" fill="#0F172A"/>
+  <rect x="790" y="115" width="280" height="290" rx="18" fill="#F8FAFC"/>
+  <text x="135" y="157" fill="#94A3B8" font-family="Inter,Arial" font-size="20">Explorer</text>
+  <text x="415" y="157" fill="#40A9FF" font-family="ui-monospace,monospace" font-size="18">/App.tsx</text>
+  <text x="820" y="157" fill="#172033" font-family="Inter,Arial" font-size="22" font-weight="700">Live Preview</text>
+  <text x="415" y="208" fill="#E2E8F0" font-family="ui-monospace,monospace" font-size="18">export default function App() {</text>
+  <text x="435" y="246" fill="#A7F3D0" font-family="ui-monospace,monospace" font-size="18">return &lt;h1&gt;Mobile IDE&lt;/h1&gt;;</text>
+  <text x="415" y="284" fill="#E2E8F0" font-family="ui-monospace,monospace" font-size="18">}</text>
+  <text x="135" y="210" fill="#E2E8F0" font-family="Inter,Arial" font-size="18">📄 App.tsx</text>
+  <text x="135" y="252" fill="#E2E8F0" font-family="Inter,Arial" font-size="18">🧩 Extensions</text>
+  <text x="135" y="294" fill="#E2E8F0" font-family="Inter,Arial" font-size="18">🌿 GitHub</text>
+  <text x="820" y="230" fill="#0F172A" font-family="Inter,Arial" font-size="40" font-weight="800">Mobile IDE</text>
+  <text x="820" y="280" fill="#475569" font-family="Inter,Arial" font-size="20">Code, preview, install libraries</text>
+</svg>
