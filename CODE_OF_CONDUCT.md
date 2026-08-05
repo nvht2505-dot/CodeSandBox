@@ -1,74 +1,41 @@
-# Contributor Covenant Code of Conduct
+# Contributor Covenant Code of Conduct (EN)
 
-## Our Pledge
+As contributors and maintainers of CodeSandBox, we pledge to respect all people who contribute through reporting issues, posting feature requests, updating documentation, submitting pull requests or patches, and other activities.
 
-In the interest of fostering an open and welcoming environment, we as
-contributors and maintainers pledge to making participation in our project and
-our community a harassment-free experience for everyone, regardless of age, body
-size, disability, ethnicity, gender identity and expression, level of experience,
-nationality, personal appearance, race, religion, or sexual identity and
-orientation.
-
-## Our Standards
-
-Examples of behavior that contributes to creating a positive environment
-include:
-
-- Using welcoming and inclusive language
-- Being respectful of differing viewpoints and experiences
-- Gracefully accepting constructive criticism
-- Focusing on what is best for the community
-- Showing empathy towards other community members
+We are committed to making participation in this project a harassment-free experience for everyone, regardless of level of experience, gender, gender identity and expression, sexual orientation, disability, personal appearance, body size, race, ethnicity, age, religion, or nationality.
 
 Examples of unacceptable behavior by participants include:
 
-- The use of sexualized language or imagery and unwelcome sexual attention or
-  advances
-- Trolling, insulting/derogatory comments, and personal or political attacks
-- Public or private harassment
-- Publishing others' private information, such as a physical or electronic
-  address, without explicit permission
-- Other conduct which could reasonably be considered inappropriate in a
-  professional setting
+- The use of sexualized language or imagery and unwelcome sexual attention or advances;
+- Trolling, insulting/derogatory comments, and personal or political attacks;
+- Public or private harassment;
+- Publishing others' private information, such as a physical or electronic address, without explicit permission;
+- Other conduct which could reasonably be considered inappropriate in a professional setting.
 
-## Our Responsibilities
+Enforcement
 
-Project maintainers are responsible for clarifying the standards of acceptable
-behavior and are expected to take appropriate and fair corrective action in
-response to any instances of unacceptable behavior.
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting the project maintainers at: nvht2505-dot@users.noreply.github.com. All reports will be reviewed and investigated and will result in a response that is deemed necessary and appropriate to the circumstances. The maintainers are obligated to maintain confidentiality with regard to the reporter of an incident.
 
-Project maintainers have the right and responsibility to remove, edit, or
-reject comments, commits, code, wiki edits, issues, and other contributions
-that are not aligned to this Code of Conduct, or to ban temporarily or
-permanently any contributor for other behaviors that they deem inappropriate,
-threatening, offensive, or harmful.
+This Code of Conduct is adapted from the Contributor Covenant, version 2.1, available at https://www.contributor-covenant.org/version/2/1/code_of_conduct.html
 
-## Scope
+---
 
-This Code of Conduct applies both within project spaces and in public spaces
-when an individual is representing the project or its community. Examples of
-representing a project or community include using an official project e-mail
-address, posting via an official social media account, or acting as an appointed
-representative at an online or offline event. Representation of a project may be
-further defined and clarified by project maintainers.
+# Quy tắc Ứng xử cho người đóng góp (VI)
 
-## Enforcement
+Là những người đóng góp và quản lý dự án CodeSandBox, chúng tôi cam kết tôn trọng mọi người tham gia bằng cách báo lỗi, đề xuất tính năng, cập nhật tài liệu, gửi pull request hoặc các hoạt động khác.
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported by contacting the project team at hello@codesandbox.io. All
-complaints will be reviewed and investigated and will result in a response that
-is deemed necessary and appropriate to the circumstances. The project team is
-obligated to maintain confidentiality with regard to the reporter of an incident.
-Further details of specific enforcement policies may be posted separately.
+Chúng tôi cam kết tạo môi trường tham gia không có quấy rối cho mọi người, bất kể kinh nghiệm, giới tính, bản dạng giới, xu hướng tính dục, khuyết tật, ngoại hình, tuổi tác, chủng tộc, dân tộc, tôn giáo hay quốc tịch.
 
-Project maintainers who do not follow or enforce the Code of Conduct in good
-faith may face temporary or permanent repercussions as determined by other
-members of the project's leadership.
+Ví dụ về hành vi không chấp nhận được:
 
-## Attribution
+- Ngôn ngữ hay hình ảnh mang tính tình dục hoặc quấy rối tình dục;
+- Lăng mạ, bình luận xúc phạm hoặc công kích cá nhân/phản chính trị;
+- Quấy rối công khai hoặc riêng tư;
+- Công bố thông tin riêng tư của người khác (địa chỉ, email, v.v.) mà không có sự cho phép;
+- Hành vi khác có thể được coi là không phù hợp trong môi trường chuyên nghiệp.
 
-This Code of Conduct is adapted from the [Contributor Covenant][homepage], version 1.4,
-available at [http://contributor-covenant.org/version/1/4][version]
+Báo cáo và thực thi
 
-[homepage]: http://contributor-covenant.org
-[version]: http://contributor-covenant.org/version/1/4/
+Bạn có thể báo cáo hành vi lạm dụng hoặc quấy rối bằng cách liên hệ với maintainer dự án: nvht2505-dot@users.noreply.github.com. Mọi báo cáo sẽ được xem xét, điều tra và xử lý phù hợp. Ban quản lý dự án cam kết giữ bí mật thông tin người báo cáo khi cần thiết.
+
+Nguồn: Dựa trên Contributor Covenant, phiên bản 2.1.
