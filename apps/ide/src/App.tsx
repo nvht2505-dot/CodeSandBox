@@ -1,5 +1,5 @@
 import { SandpackCodeEditor, SandpackFileExplorer, SandpackPreview, SandpackProvider, useSandpack } from "@codesandbox/sandpack-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createRepo, exchangeGitHubCode, getGitHubAuthorizeUrl, getGitHubUser, pushFileToGit, type GitHubUser } from "./services/github";
 
 type Tab = "files" | "code" | "preview" | "git";
@@ -93,24 +93,22 @@ export default function App() {
   const [savedCode] = useState<string | null>(() => localStorage.getItem("mobile-ide-code"));
   const [gitToken, setGitToken] = useState<string | null>(() => localStorage.getItem("github_token"));
 
+  const oauthCodeConsumed = useRef(false);
+
   useEffect(() => {
     const code = new URLSearchParams(window.location.search).get("code");
-    if (!code) return;
+    if (!code || oauthCodeConsumed.current) return;
 
-    let cancelled = false;
+    oauthCodeConsumed.current = true;
+    stripOAuthQueryParams();
+
     exchangeGitHubCode(code)
       .then((data) => {
-        if (cancelled || !data.access_token) return;
+        if (!data.access_token) return;
         localStorage.setItem("github_token", data.access_token);
         setGitToken(data.access_token);
       })
-      .finally(() => {
-        if (!cancelled) stripOAuthQueryParams();
-      });
-
-    return () => {
-      cancelled = true;
-    };
+      .catch(() => undefined);
   }, []);
 
   return (
