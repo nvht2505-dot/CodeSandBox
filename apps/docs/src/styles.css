@@ -1,0 +1,12 @@
+:root { --ink: #172033; --muted: #64748b; --accent: #40a9ff; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+.docs-shell { background: linear-gradient(135deg, #f8fbff, #eef6ff); color: var(--ink); display: flex; min-height: 100vh; }
+aside { background: rgba(255, 255, 255, 0.86); border-right: 1px solid #dbeafe; display: flex; flex-direction: column; gap: 0.5rem; padding: 1.5rem; width: 18rem; }
+.logo { align-items: center; display: flex; gap: 0.65rem; margin-bottom: 1rem; }
+.logo img { height: 2.25rem; width: 2.25rem; }
+button { background: transparent; border: 0; border-radius: 0.75rem; color: var(--muted); padding: 0.75rem; text-align: left; }
+button.active { background: var(--ink); color: white; }
+main { max-width: 52rem; padding: 3rem; }
+p { color: #334155; font-size: 1.05rem; line-height: 1.75; }
+@media (max-width: 768px) { .docs-shell { flex-direction: column; } aside { border-right: 0; border-bottom: 1px solid #dbeafe; flex-direction: row; overflow-x: auto; width: auto; } }
