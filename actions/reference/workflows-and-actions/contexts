@@ -1,0 +1,150 @@
+# Référence des contextes
+
+Trouvez des informations sur les contextes disponibles dans GitHub Actions les flux de travail, notamment les propriétés disponibles, les méthodes d’accès et les exemples d’utilisation.
+
+## Contextes disponibles
+
+| Nom du contexte | Type     | Description                                                                                                                                                              |
+| --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `github`        | `object` | Informations sur l’exécution du workflow. Pour plus d’informations, voir Contexte [`github`](#github-context).                                                           |
+| `env`           | `object` | Contient des variables définies dans un workflow, un travail ou une étape. Pour plus d’informations, voir Contexte [`env`](#env-context).                                |
+| `vars`          | `object` | Contient les variables définies au niveau du dépôt, de l’organisation ou de l’environnement. Pour plus d’informations, voir Contexte [`vars`](#vars-context).            |
+| `job`           | `object` | Informations sur le travail en cours d’exécution. Pour plus d’informations, voir Contexte [`job`](#job-context).                                                         |
+| `jobs`          | `object` | Pour les workflows réutilisables uniquement, contient les sorties des travaux du workflow réutilisable. Pour plus d’informations, voir Contexte [`jobs`](#jobs-context). |
+| `steps`         | `object` | Informations sur les étapes qui ont été exécutées dans le travail en cours. Pour plus d’informations, voir Contexte [`steps`](#steps-context).                           |
+| `runner`        | `object` | Informations sur l’exécuteur qui exécute le travail en cours. Pour plus d’informations, voir Contexte [`runner`](#runner-context).                                       |
+| `secrets`       | `object` | Contient les noms et valeurs des secrets disponibles pour une exécution de workflow. Pour plus d’informations, voir Contexte [`secrets`](#secrets-context).              |
+| `strategy`      | `object` | Informations sur la stratégie d’exécution de matrice pour le travail en cours. Pour plus d’informations, voir Contexte [`strategy`](#strategy-context).                  |
+| `matrix`        | `object` | Contient les propriétés de matrice définies dans le workflow qui s’appliquent au travail en cours. Pour plus d’informations, voir Contexte [`matrix`](#matrix-context).  |
+| `needs`         | `object` | Contient les sorties de tous les travaux définis comme dépendance du travail en cours. Pour plus d’informations, voir Contexte [`needs`](#needs-context).                |
+| `inputs`        | `object` | Contient les entrées d’un workflow réutilisable ou déclenché manuellement. Pour plus d’informations, voir Contexte [`inputs`](#inputs-context).                          |
+
+Dans le cadre d’une expression, vous pouvez accéder aux informations de contexte à l’aide d’une syntaxe parmi deux syntaxes au choix.
+
+* Syntaxe d’index : `github['sha']`
+* Syntaxe de déréférencement de propriété : `github.sha`
+
+Pour permettre l’utilisation de la syntaxe de déréférencement de propriété, le nom de propriété doit commencer par une lettre ou `_`, et contenir uniquement des caractères alphanumériques, `-` ou `_`.
+
+Si vous tentez de déréférencer une propriété inexistante, cela aboutit à une chaîne vide.
+
+### Déterminer quand utiliser des contextes
+
+GitHub Actions inclut une collection de variables *appelées contextes* et une collection similaire de *variables appelées variables par défaut*. Ces variables sont destinées à être utilisées à différents stades du workflow.
+
+* **Variables d’environnement par défaut :** ces variables d’environnement existent uniquement sur l’exécuteur du travail. Pour plus d’informations, consultez « [Références des variables](/fr/actions/reference/workflows-and-actions/variables) ».
+* **Contextes :** vous pouvez utiliser la plupart des contextes à n’importe quel stade du workflow, notamment quand les *variables par défaut* ne sont pas disponibles. Par exemple, vous pouvez utiliser des contextes avec des expressions pour effectuer un traitement initial avant que le travail soit routé vers un exécuteur. Cela vous permet d’utiliser un contexte avec le mot clé conditionnel `if` pour déterminer si une étape doit être exécutée. Une fois le travail en cours d’exécution, vous pouvez également récupérer des variables de contexte à partir de l’exécuteur du travail, par exemple `runner.os`. Pour plus d’informations sur l’emplacement où vous pouvez utiliser divers contextes au sein d’un workflow, consultez [Disponibilité du contexte](#context-availability).
+
+L’exemple suivant montre comment ces différents types de variables peuvent être utilisés ensemble dans un travail :
+
+```yaml copy
+name: CI
+on: push
+jobs:
+  prod-check:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Deploying to production server on branch $GITHUB_REF"
+```
+
+Dans cet exemple, l’instruction `if` vérifie le contexte [`github.ref`](/fr/actions/reference/workflows-and-actions/contexts#github-context) pour déterminer le nom de la branche actuelle. Si le nom est `refs/heads/main`, les étapes suivantes sont exécutées. La `if` vérification est traitée par GitHub Actions, et le travail est envoyé uniquement à l’exécuteur si le résultat est `true`. Une fois le travail envoyé à l’exécuteur, l’étape est exécutée et référence la variable [`$GITHUB_REF`](/fr/actions/reference/workflows-and-actions/variables) de l’exécuteur.
+
+### Disponibilité du contexte
+
+Différents contextes sont disponibles tout au long d’une exécution de workflow. Par exemple, le contexte `secrets` peut uniquement être utilisé à certains endroits au sein d’un travail.
+
+De plus, certaines fonctions peuvent uniquement être utilisées à certains endroits. Par exemple, la fonction `hashFiles` n’est pas disponible partout.
+
+Le tableau suivant répertorie les restrictions sur l’utilisation de chaque contexte et chaque fonction spéciale dans un workflow. Les contextes répertoriés sont disponibles uniquement pour la clé de workflow spécifiée et ne peuvent pas être utilisés ailleurs. Si elle n’est pas listée ci-dessous, une fonction peut être utilisée n’importe où.
+
+| Clé de workflow                                    | Contexte                                                                          | Fonctions spéciales                              |
+| -------------------------------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------ |
+| `run-name`                                         | `github, inputs, vars`                                                            | None                                             |
+| `concurrency`                                      | `github, inputs, vars`                                                            | None                                             |
+| `env`                                              | `github, secrets, inputs, vars`                                                   | None                                             |
+| `jobs.<job_id>.concurrency`                        | `github, needs, strategy, matrix, inputs, vars`                                   | None                                             |
+| `jobs.<job_id>.container`                          | `github, needs, strategy, matrix, vars, inputs`                                   | None                                             |
+| `jobs.<job_id>.container.credentials`              | `github, needs, strategy, matrix, env, vars, secrets, inputs`                     | None                                             |
+| `jobs.<job_id>.container.env.<env_id>`             | `github, needs, strategy, matrix, job, runner, env, vars, secrets, inputs`        | None                                             |
+| `jobs.<job_id>.container.image`                    | `github, needs, strategy, matrix, vars, inputs`                                   | None                                             |
+| `jobs.<job_id>.continue-on-error`                  | `github, needs, strategy, vars, matrix, inputs`                                   | None                                             |
+| `jobs.<job_id>.defaults.run`                       | `github, needs, strategy, matrix, env, vars, inputs`                              | None                                             |
+| `jobs.<job_id>.env`                                | `github, needs, strategy, matrix, vars, secrets, inputs`                          | None                                             |
+| `jobs.<job_id>.environment`                        | `github, needs, strategy, matrix, vars, inputs`                                   | None                                             |
+| `jobs.<job_id>.environment.url`                    | `github, needs, strategy, matrix, job, runner, env, vars, steps, inputs`          | None                                             |
+| `jobs.<job_id>.if`                                 | `github, needs, vars, inputs`                                                     | `always, cancelled, success, failure`            |
+| `jobs.<job_id>.name`                               | `github, needs, strategy, matrix, vars, inputs`                                   | None                                             |
+| `jobs.<job_id>.outputs.<output_id>`                | `github, needs, strategy, matrix, job, runner, env, vars, secrets, steps, inputs` | None                                             |
+| `jobs.<job_id>.runs-on`                            | `github, needs, strategy, matrix, vars, inputs`                                   | None                                             |
+| `jobs.<job_id>.secrets.<secrets_id>`               | `github, needs, strategy, matrix, secrets, inputs, vars`                          | None                                             |
+| `jobs.<job_id>.services`                           | `github, needs, strategy, matrix, vars, inputs`                                   | None                                             |
+| `jobs.<job_id>.services.<service_id>.credentials`  | `github, needs, strategy, matrix, env, vars, secrets, inputs`                     | None                                             |
+| `jobs.<job_id>.services.<service_id>.env.<env_id>` | `github, needs, strategy, matrix, job, runner, env, vars, secrets, inputs`        | None                                             |
+| `jobs.<job_id>.steps.continue-on-error`            | `github, needs, strategy, matrix, job, runner, env, vars, secrets, steps, inputs` | `hashFiles`                                      |
+| `jobs.<job_id>.steps.env`                          | `github, needs, strategy, matrix, job, runner, env, vars, secrets, steps, inputs` | `hashFiles`                                      |
+| `jobs.<job_id>.steps.if`                           | `github, needs, strategy, matrix, job, runner, env, vars, steps, inputs`          | `always, cancelled, success, failure, hashFiles` |
+| `jobs.<job_id>.steps.name`                         | `github, needs, strategy, matrix, job, runner, env, vars, secrets, steps, inputs` | `hashFiles`                                      |
+| `jobs.<job_id>.steps.run`                          | `github, needs, strategy, matrix, job, runner, env, vars, secrets, steps, inputs` | `hashFiles`                                      |
+| `jobs.<job_id>.steps.timeout-minutes`              | `github, needs, strategy, matrix, job, runner, env, vars, secrets, steps, inputs` | `hashFiles`                                      |
+| `jobs.<job_id>.steps.with`                         | `github, needs, strategy, matrix, job, runner, env, vars, secrets, steps, inputs` | `hashFiles`                                      |
+| `jobs.<job_id>.steps.working-directory`            | `github, needs, strategy, matrix, job, runner, env, vars, secrets, steps, inputs` | `hashFiles`                                      |
+| `jobs.<job_id>.strategy`                           | `github, needs, vars, inputs`                                                     | None                                             |
+| `jobs.<job_id>.timeout-minutes`                    | `github, needs, strategy, matrix, vars, inputs`                                   | None                                             |
+| `jobs.<job_id>.with.<with_id>`                     | `github, needs, strategy, matrix, inputs, vars`                                   | None                                             |
+| `on.workflow_call.inputs.<inputs_id>.default`      | `github, inputs, vars`                                                            | None                                             |
+| `on.workflow_call.outputs.<output_id>.value`       | `github, jobs, vars, inputs`                                                      | None                                             |
+
+### Exemple : impression d’informations de contexte dans le journal
+
+Vous pouvez imprimer le contenu des contextes dans le journal pour le débogage. La fonction [`toJSON`](/fr/actions/reference/workflows-and-actions/expressions#tojson) est nécessaire pour l’impression élégante des objets JSON dans le journal.
+
+> \[!WARNING]
+> Lorsque vous utilisez le contexte `github` entier, n’oubliez pas qu’il inclut des informations sensibles telles que `github.token`. GitHub masque les secrets lorsqu’ils sont imprimés sur la console, mais vous devez être prudent lors de l’exportation ou de l’impression du contexte.
+
+```yaml copy
+name: Context testing
+on: push
+
+jobs:
+  dump_contexts_to_log:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+      - name: Dump job context
+        env:
+          JOB_CONTEXT: ${{ toJson(job) }}
+        run: echo "$JOB_CONTEXT"
+      - name: Dump steps context
+        env:
+          STEPS_CONTEXT: ${{ toJson(steps) }}
+        run: echo "$STEPS_CONTEXT"
+      - name: Dump runner context
+        env:
+          RUNNER_CONTEXT: ${{ toJson(runner) }}
+        run: echo "$RUNNER_CONTEXT"
+      - name: Dump strategy context
+        env:
+          STRATEGY_CONTEXT: ${{ toJson(strategy) }}
+        run: echo "$STRATEGY_CONTEXT"
+      - name: Dump matrix context
+        env:
+          MATRIX_CONTEXT: ${{ toJson(matrix) }}
+        run: echo "$MATRIX_CONTEXT"
+```
+
+## Contexte `github`
+
+Le contexte `github` contient des informations sur l’exécution du workflow et l’événement qui a déclenché cette exécution. Vous pouvez lire la plupart des données du contexte `github` dans les variables d’environnement. Pour plus d’informations sur les variables d’environnement, consultez [Stocker des informations dans des variables](/fr/actions/how-tos/write-workflows/choose-what-workflows-do/use-variables).
+
+> \[!WARNING]
+> Lorsque vous utilisez le contexte `github` entier, n’oubliez pas qu’il inclut des informations sensibles telles que `github.token`. GitHub masque les secrets lorsqu’ils sont imprimés sur la console, mais vous devez être prudent lors de l’exportation ou de l’impression du contexte.
+> \[!WARNING]
+> Lors de la création de flux de travail et d’actions, vous devez toujours déterminer si votre code pourrait exécuter des entrées non fiables provenant de personnes malveillantes potentielles. Certains contextes doivent être traités comme des entrées non fiables, car un attaquant peut insérer son propre contenu malveillant. Pour plus d’informations, consultez « [Informations de référence sur l’utilisation sécurisée](/fr/actions/reference/security/secure-use#good-practices-for-mitigating-script-injection-attacks) ».
+
+| Nom de la propriété                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | Type      | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `github`                                   
