@@ -1,587 +1,146 @@
-toàn bộ mã nguồn và tài liệu triển khai chi tiết cho một dự án lớn như thế này (bao gồm cả Web App Mobile IDE và trang Tài liệu Docs), chúng ta cần chia nhỏ lộ trình để đảm bảo độ chi tiết, tối ưu hiệu năng mobile và cấu trúc chuẩn
-Dưới đây là Phần 1: Kiến trúc tổng thể và Mã nguồn Web App Mobile IDE.
-------------------------------
-## TÀI LIỆU TRIỂN KHAI DỰ ÁN: MOBILE CODESANDBOX IDE## PHẦN 1: THIẾT KẾ KIẾN TRÚC & MÃ NGUỒN MOBILE IDE## 1. Kiến trúc thư mục dự án
-Dự án được xây dựng dựa trên Vite + React + TypeScript + Tailwind CSS.
+<!-- ===========================
+     README.md — CodeSandbox
+     Tác giả: nvht2505-dot
+     Nội dung: Tiếng Việt, hiện đại, SVG inline
+     =========================== -->
 
-mobile-sandbox-ide/
-├── apps/
-│   ├── ide/               # Ứng dụng Mobile IDE chính
-│   └── docs/              # Trang tài liệu hướng dẫn (Sử dụng Nextra hoặc VitePress/React)
-├── package.json
-└── README.md
+<div align="center">
 
-## 2. Thiết kế Cơ sở Dữ liệu & State (Local)
-Vì chạy trên mobile, trạng thái code hiện tại của người dùng sẽ được đồng bộ trực tiếp vào localStorage để tránh mất dữ liệu khi trình duyệt tải lại trang (reload).
-------------------------------
-## 3. Mã nguồn Full cho Web App Mobile IDE (apps/ide)## Bước 1: Khởi tạo cấu hình Tailwind (tailwind.config.js)
-Đảm bảo giao diện tối ưu cho không gian mobile, ẩn các thanh cuộn mặc định.
+<!-- Logo SVG -->
+<svg width="220" height="80" viewBox="0 0 440 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="CodeSandbox Logo">
+  <defs>
+    <linearGradient id="g1" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#7b61ff"/>
+      <stop offset="100%" stop-color="#00d4ff"/>
+    </linearGradient>
+  </defs>
+  <rect rx="20" ry="20" width="440" height="160" fill="url(#g1)"/>
+  <g transform="translate(28,26)" fill="#fff" font-family="Segoe UI, Roboto, Helvetica, Arial" font-weight="700">
+    <!-- Icon: code brackets -->
+    <g transform="translate(0,0)">
+      <rect x="0" y="0" width="120" height="120" rx="16" fill="rgba(255,255,255,0.12)"/>
+      <path d="M36 36 L52 60 L36 84" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M84 36 L68 60 L84 84" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+    <!-- Text -->
+    <text x="150" y="60" font-size="46" fill="#fff">CodeSandbox</text>
+    <text x="150" y="96" font-size="18" fill="rgba(255,255,255,0.95)">Môi trường thử nghiệm mã — nhanh, đơn giản, trực quan</text>
+  </g>
+</svg>
 
-/** @type {import('tailwindcss').Config} */export default {
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
-  theme: {
-    extend: {
-      colors: {
-        darkBg: "#151515",
-        panelBg: "#1e1e1e",
-        accent: "#40a9ff",
-      },
-    },
-  },
-  plugins: [],
-}
+<!-- Badges row: SVG badges (static) -->
+<div style="margin-top:12px; display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
+  <!-- Version Badge -->
+  <svg height="28" viewBox="0 0 90 28" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="version">
+    <rect rx="4" width="90" height="28" fill="#2d2d2d"/>
+    <rect rx="4" x="52" width="38" height="28" fill="#4CAF50"/>
+    <text x="12" y="18" fill="#fff" font-family="Verdana" font-size="12">version</text>
+    <text x="66" y="18" fill="#fff" font-family="Verdana" font-size="12">v1.0.0</text>
+  </svg>
 
-## Bước 2: Viết mã nguồn chính cho Mobile IDE (src/App.tsx)
-Mã nguồn này xây dựng hệ thống Tab Navigation mượt mà, tích hợp Thanh phím tắt ký tự đặc biệt (Quick Toolbar) hỗ trợ gõ code nhanh trên bàn phím ảo điện thoại.
+  <!-- License Badge -->
+  <svg height="28" viewBox="0 0 110 28" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="license">
+    <rect rx="4" width="110" height="28" fill="#2d2d2d"/>
+    <rect rx="4" x="62" width="48" height="28" fill="#0366d6"/>
+    <text x="12" y="18" fill="#fff" font-family="Verdana" font-size="12">license</text>
+    <text x="76" y="18" fill="#fff" font-family="Verdana" font-size="12">MIT</text>
+  </svg>
 
-import React, { useState, useEffect } from "react";import {
-  SandpackProvider,
-  SandpackCodeEditor,
-  SandpackPreview,
-  SandpackFileExplorer,
-  useSandpack,
-} from "@codesandbox/sandpack-react";
-// Thanh công cụ hỗ trợ gõ nhanh ký tự đặc biệt cho mobileconst QuickKeysToolbar = () => {
-  const { sandpack } = useSandpack();
-  const keys = ["{", "}", "(", ")", "[", "]", "<", ">", ";", "=", '"', "/", "*"];
+  <!-- Sponsor Badge -->
+  <svg height="28" viewBox="0 0 120 28" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="sponsor">
+    <rect rx="4" width="120" height="28" fill="#2d2d2d"/>
+    <rect rx="4" x="70" width="50" height="28" fill="#ff4081"/>
+    <g transform="translate(12,4)">
+      <path d="M6 6 C6 3 12 1 14 6 C16 1 22 3 22 6 C22 11 14 14 14 14 C14 14 6 11 6 6 Z" fill="#fff"/>
+    </g>
+    <text x="32" y="18" fill="#fff" font-family="Verdana" font-size="12">sponsor</text>
+    <text x="86" y="18" fill="#fff" font-family="Verdana" font-size="12">Support</text>
+  </svg>
+</div>
 
-  const handleInsertKey = (key: string) => {
-    const { activeFile, files } = sandpack;
-    const currentCode = files[activeFile].code;
-    
-    // Chèn ký tự vào cuối (Cấp độ cơ bản cho mobile text input)
-    const updatedCode = currentCode + key;
-    sandpack.updateFile(activeFile, updatedCode);
-  };
+</div>
 
-  return (
-    <div className="flex gap-2 overflow-x-auto p-2 bg-neutral-900 border-t border-neutral-800 scrollbar-none">
-      {keys.map((key) => (
-        <button
-          key={key}
-          onClick={() => handleInsertKey(key)}
-          className="flex-shrink-0 bg-neutral-800 text-neutral-200 px-3 py-1.5 rounded text-sm font-mono active:bg-accent active:text-white"
-        >
-          {key}
-        </button>
-      ))}
-    </div>
-  );
-};
-export default function App() {
-  const [activeTab, setActiveTab] = useState<"files" | "code" | "preview">("code");
+---
 
-  // Khôi phục code cũ từ localStorage nếu có
-  const [savedCode, setSavedCode] = useState<string | null>(null);
-  useEffect(() => {
-    const local = localStorage.getItem("mobile-ide-code");
-    if (local) setSavedCode(local);
-  }, []);
+# Mô tả ngắn
+CodeSandbox — một kho mẫu và môi trường thử nghiệm mã dành cho cá nhân và dự án nhỏ. README này thiết kế theo phong cách hiện đại, trực quan, tập trung vào trải nghiệm người dùng khi lần đầu tiếp cận repository.
 
-  return (
-    <div className="flex flex-col h-screen w-screen bg-darkBg text-white select-none overflow-hidden">
-      {/* Header */}
-      <header className="flex items-center justify-between px-4 h-12 bg-panelBg border-b border-neutral-800">
-        <div className="flex items-center gap-2">
-          <span className="text-xl">📦</span>
-          <h1 className="font-bold text-sm tracking-wide">📦 SandBox Mobile</h1>
-        </div>
-        <span className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full font-mono">
-          Live
-        </span>
-      </header>
+---
 
-      {/* Vùng nội dung chính */}
-      <div className="flex-1 overflow-hidden relative">
-        <SandpackProvider
-          template="react"
-          theme="dark"
-          options={{
-            initMode: "immediate",
-            recompileMode: "immediate",
-          }}
-          customSetup={{
-            files: savedCode ? { "/App.js": savedCode } : undefined,
-          }}
-        >
-          {/* Lắng nghe thay đổi code để lưu trữ tự động */}
-          <CodeAutoSaver />
+## Mục lục
+- [Tính năng chính](#tính-năng-chính)
+- [Ảnh minh họa & Hướng dẫn nhanh](#ảnh-minh-họa--hướng-dẫn-nhanh)
+- [Bắt đầu nhanh (Quick Start)](#bắt-đầu-nhanh-quick-start)
+- [Cấu trúc dự án](#cấu-trúc-dự-án)
+- [Đóng góp](#đóng-góp)
+- [Nhà tài trợ](#nhà-tài-trợ)
+- [License](#license)
+- [Liên hệ](#liên-hệ)
 
-          <div className="w-full h-full">
-            {/* TAB FILE EXPLORER */}
-            {activeTab === "files" && (
-              <div className="p-4 h-full overflow-y-auto bg-darkBg">
-                <h3 className="text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-2">
-                  Cây thư mục dự án
-                </h3>
-                <SandpackFileExplorer />
-              </div>
-            )}
+---
 
-            {/* TAB CODE EDITOR */}
-            {activeTab === "code" && (
-              <div className="h-full flex flex-col justify-between">
-                <div className="flex-1 overflow-y-auto">
-                  <SandpackCodeEditor
-                    showTabs={true}
-                    showLineNumbers={true}
-                    showInlineErrors={true}
-                    wrapContent={true} // Bắt buộc trên mobile để tránh cuộn ngang
-                    closableTabs={false}
-                  />
-                </div>
-                {/* Thanh phím tắt gắn liền phía trên bàn phím ảo */}
-                <QuickKeysToolbar />
-              </div>
-            )}
+## Tính năng chính
+- Giao diện đơn giản, hướng thử nghiệm nhanh.
+- Bộ mẫu (templates) để bắt đầu cho HTML/CSS/JS, React, Vue, Node.
+- Hỗ trợ chạy local bằng script chuẩn (npm / yarn) hoặc Docker.
+- Tích hợp hướng dẫn trực quan (SVG) cho mọi bước.
 
-            {/* TAB PREVIEW */}
-            {activeTab === "preview" && (
-              <div className="h-full bg-white">
-                <SandpackPreview
-                  showNavigator={true}
-                  showOpenInCodeSandbox={false}
-                  showRefreshButton={true}
-                />
-              </div>
-            )}
-          </div>
-        </SandpackProvider>
-      </div>
+---
 
-      {/* Navigation Bottom Tabs */}
-      <nav className="h-14 bg-panelBg border-t border-neutral-800 flex justify-around items-center px-2 pb-safe">
-        <button
-          onClick={() => setActiveTab("files")}
-          className={`flex flex-col items-center gap-0.5 w-full py-1 text-xs transition-colors ${
-            activeTab === "files" ? "text-accent font-semibold" : "text-neutral-400"
-          }`}
-        >
-          <span className="text-lg">📁</span>
-          <span>Thư mục</span>
-        </button>
+## Ảnh minh họa & Hướng dẫn nhanh (SVG)
+Dưới đây là các SVG hướng dẫn từng bước — bạn có thể để trực tiếp trong README để giúp người mới.
 
-        <button
-          onClick={() => setActiveTab("code")}
-          className={`flex flex-col items-center gap-0.5 w-full py-1 text-xs transition-colors ${
-            activeTab === "code" ? "text-accent font-semibold" : "text-neutral-400"
-          }`}
-        >
-          <span className="text-lg">💻</span>
-          <span>Trình viết code</span>
-        </button>
+<!-- Hướng dẫn: Cài đặt, Chạy, Xem -->
+<div align="center" style="display:flex; gap:18px; justify-content:center; flex-wrap:wrap; margin:18px 0;">
+  <!-- Step 1: Install -->
+  <svg width="200" height="120" viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Install">
+    <rect rx="10" width="200" height="120" fill="#0f1724"/>
+    <g fill="#fff" font-family="Segoe UI, Roboto" font-size="14">
+      <text x="20" y="28" font-weight="700">1. Cài đặt</text>
+      <text x="20" y="52" font-size="12" fill="#9aa7bf">Cài dependencies</text>
+      <rect x="20" y="66" width="160" height="34" rx="6" fill="#111827"/>
+      <text x="30" y="88" font-family="monospace" font-size="12">npm install</text>
+    </g>
+  </svg>
 
-        <button
-          onClick={() => setActiveTab("preview")}
-          className={`flex flex-col items-center gap-0.5 w-full py-1 text-xs transition-colors ${
-            activeTab === "preview" ? "text-accent font-semibold" : "text-neutral-400"
-          }`}
-        >
-          <span className="text-lg">👁️‍🗨️</span>
-          <span>Kết quả</span>
-        </button>
-      </nav>
-    </div>
-  );
-}
-// Component con hỗ trợ tự động lưu trạng thái Code vào LocalStoragefunction CodeAutoSaver() {
-  const { sandpack } = useSandpack();
-  useEffect(() => {
-    const activeCode = sandpack.files[sandpack.activeFile]?.code;
-    if (activeCode) {
-      localStorage.setItem("mobile-ide-code", activeCode);
-    }
-  }, [sandpack.files, sandpack.activeFile]);
+  <!-- Step 2: Run -->
+  <svg width="200" height="120" viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Run">
+    <rect rx="10" width="200" height="120" fill="#07113a"/>
+    <g fill="#fff" font-family="Segoe UI, Roboto" font-size="14">
+      <text x="20" y="28" font-weight="700">2. Chạy</text>
+      <text x="20" y="52" font-size="12" fill="#9aa7bf">Chạy môi trường dev</text>
+      <rect x="20" y="66" width="160" height="34" rx="6" fill="#0b1226"/>
+      <text x="30" y="88" font-family="monospace" font-size="12">npm start</text>
+    </g>
+  </svg>
 
-  return null;
-}
+  <!-- Step 3: Mở trình duyệt -->
+  <svg width="200" height="120" viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Preview">
+    <rect rx="10" width="200" height="120" fill="#091827"/>
+    <g fill="#fff" font-family="Segoe UI, Roboto" font-size="14">
+      <text x="20" y="28" font-weight="700">3. Xem</text>
+      <text x="20" y="52" font-size="12" fill="#9aa7bf">Mở localhost</text>
+      <rect x="20" y="66" width="160" height="34" rx="6" fill="#0b1622"/>
+      <text x="30" y="88" font-family="monospace" font-size="12">http://localhost:3000</text>
+    </g>
+  </svg>
+</div>
 
-------------------------------
-## PHẦN 2: THIẾT KẾ TRANG TÀI LIỆU ĐI KÈM (DOCS INTERFACE)
-Đối với trang tài liệu hướng dẫn sử dụng hoặc API cho dự án IDE, chúng ta xây dựng một giao diện tối giản chuẩn tài liệu kỹ thuật (Developer Docs) gồm thanh Sidebar bên trái và nội dung bài viết dạng Markdown hiển thị bên phải.
-## Mã nguồn trang tài liệu (apps/docs/src/App.tsx)
+---
 
-import React, { useState } from "react";
-const DOCS_DATA = {
-  "gioi-thieu": {
-    title: "Giới thiệu về Mobile IDE",
-    content: "Dự án giả lập môi trường phát triển ứng dụng (IDE) gọn nhẹ chạy trực tiếp trên trình duyệt thiết bị di động bằng cách ứng dụng nền tảng nhân Sandpack kết hợp tối ưu giao diện dạng Tab.",
-  },
-  "cai-dat": {
-    title: "Hướng dẫn cài đặt",
-    content: "Chạy lệnh sau tại thư mục gốc của bạn:\n\nnpm i @codesandbox/sandpack-react\n\nSau đó cấu hình tailwindcss để nhận diện responsive trên các màn hình tỉ lệ nhỏ.",
-  },
-  "trien-khai": {
-    title: "Quy trình Triển khai",
-    content: "1. Build dự án ứng dụng client: npm run build\n2. Đẩy tài nguyên tĩnh lên các dịch vụ Cloudflare Pages hoặc Vercel.\n3. Cấu hình Content Security Policy (CSP) cho iframe của Sandpack để bảo mật mã nguồn thực thi.",
-  },
-};
-type DocKeys = keyof typeof DOCS_DATA;
-export default function DocsApp() {
-  const [currentSection, setCurrentSection] = useState<DocKeys>("gioi-thieu");
+## Bắt đầu nhanh (Quick Start)
 
-  return (
-    <div className="flex h-screen bg-stone-50 text-neutral-800 font-sans">
-      {/* Sidebar cố định bên trái dành cho màn hình lớn hơn mobile */}
-      <aside className="w-64 bg-white border-r border-neutral-200 p-6 flex flex-col justify-between hidden md:flex">
-        <div>
-          <h2 className="text-sm font-bold text-neutral-900 tracking-wider uppercase mb-6">
-            Tài liệu IDE Mobile
-          </h2>
-          <nav className="flex flex-col gap-2">
-            {Object.keys(DOCS_DATA).map((key) => (
-              <button
-                key={key}
-                onClick={() => setCurrentSection(key as DocKeys)}
-                className={`text-left px-3 py-2 rounded-md text-sm transition-all ${
-                  currentSection === key
-                    ? "bg-neutral-900 text-white font-medium"
-                    : "text-neutral-600 hover:bg-neutral-100"
-                }`}
-              >
-                {DOCS_DATA[key as DocKeys].title}
-              </button>
-            ))}
-          </nav>
-        </div>
-        <div className="text-xs text-neutral-400 font-mono">v1.0.0 Stable</div>
-      </aside>
+Yêu cầu trước:
+- Node.js >= 14 (hoặc Docker)
+- npm hoặc yarn
 
-      {/* Vùng hiển thị nội dung chi tiết bài hướng dẫn */}
-      <main className="flex-1 overflow-y-auto p-6 md:p-12 max-w-3xl">
-        {/* Menu bar di động nhanh */}
-        <div className="flex gap-2 mb-6 overflow-x-auto md:hidden bg-white p-2 rounded border border-neutral-200">
-          {Object.keys(DOCS_DATA).map((key) => (
-            <button
-              key={key}
-              onClick={() => setCurrentSection(key as DocKeys)}
-              className={`text-xs px-3 py-1.5 rounded-full whitespace-nowrap ${
-                currentSection === key ? "bg-neutral-950 text-white" : "bg-neutral-100 text-neutral-600"
-              }`}
-            >
-              {DOCS_DATA[key as DocKeys].title}
-            </button>
-          ))}
-        </div>
+Cách cài:
+```bash
+# Clone repo
+git clone https://github.com/nvht2505-dot/codesandbox.git
+cd codesandbox
 
-        <article className="prose prose-neutral">
-          <h1 className="text-3xl font-extrabold tracking-tight text-neutral-900 mb-4">
-            {DOCS_DATA[currentSection].title}
-          </h1>
-          <div className="whitespace-pre-line text-neutral-700 leading-relaxed font-normal">
-            {DOCS_DATA[currentSection].content}
-          </div>
-        </article>
-      </main>
-    </div>
-  );
-}
-
-------------------------------
-## PHẦN 3: HƯỚNG DẪN TRIỂN KHAI CHI TIẾT (DEPLOYMENT GUIDE)## Bước 1: Build tối ưu hóa ứng dụng
-Tại thư mục chứa dự án apps/ide hoặc apps/docs, thực thi lệnh build để đóng gói toàn bộ mã nguồn sang dạng phân phối tĩnh (HTML/JS/CSS):
-
-npm run build
-
-## Bước 2: Triển khai Hosting (Vercel / Cloudflare Pages)
-Do đây hoàn toàn là ứng dụng Phía máy khách (Client-Side), bạn có thể tải trực tiếp thư mục dist sau khi build lên các dịch vụ hosting miễn phí:
-
-   1. Cloudflare Pages: Kết nối kho Git của bạn, chọn Framework là Vite và thư mục đầu ra là dist.
-   2. Vercel: Cài đặt CLI npm i -g vercel sau đó chạy lệnh vercel tại thư mục dự án và chọn các cấu hình mặc định.
-
-## Bước 3: Cấu hình Iframe bảo mật (Quan trọng đối với Sandpack)
-Do Sandpack chạy code người dùng bằng một Iframe độc lập nhằm tránh tấn công XSS chéo sang ứng dụng chính, hãy đảm bảo rằng bạn cấu hình phần Header HTTP trên máy chủ lưu trữ (ví dụ file _headers của Cloudflare Pages):
-
-/*
-  X-Frame-Options: SAMEORIGIN
-  X-Content-Type-Options: nosniff
-  Content-Security-Policy: frame-src 'self' https://*.codesandbox.io;
-
- toàn bộ kiến trúc mã nguồn cho cả ứng dụng Mobile IDE, trang Docs và hướng dẫn deploy .
-thêm phần tích hợp tính năng kết nối Git (GitHub API) 
-
-Để tích hợp tính năng kết nối GitHub trực tiếp trên ứng dụng Mobile IDE, chúng ta sẽ sử dụng GitHub REST API kết hợp với GitHub OAuth (thông qua một API Route trung gian hoặc một dịch vụ Backend Serverless nhỏ như Cloudflare Workers/Vercel Functions để bảo mật Client Secret).
-Dưới đây là mã nguồn toàn bộ module xử lý Git và giao diện Tích hợp Git cho ứng dụng Mobile IDE của bạn.
-------------------------------
-## PHẦN 4: TÍCH HỢP TÍNH NĂNG GITHUB TRÊN MOBILE IDE## 1. Luồng hoạt động của GitHub OAuth trên Mobile
-
-   1. Người dùng bấm nút "Kết nối GitHub".
-   2. Ứng dụng chuyển hướng (redirect) user sang trang xác thực của GitHub.
-   3. Sau khi đồng ý, GitHub chuyển hướng ngược lại App của bạn kèm theo một mã code trên URL.
-   4. App gửi code này lên Serverless Function để đổi lấy access_token (token này sẽ lưu vào localStorage).
-   5. Dùng access_token để tạo Repository, Đọc file (Pull) và Đẩy code (Push/Commit).
-
-------------------------------
-## 2. Mã nguồn API Trung gian (Vercel Serverless Function)
-Tạo file api/github-oauth.js để thực hiện đổi mã Code lấy Access Token bảo mật.
-
-// api/github-oauth.jsexport default async function handler(req, res) {
-  const { code } = req.query;
-
-  if (!code) {
-    return res.status(400).json({ error: "Thiếu mã code xác thực" });
-  }
-
-  try {
-    const response = await fetch("https://github.com", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify({
-        client_id: process.env.GITHUB_CLIENT_ID,         // Cấu hình trong Dashboard Hosting
-        client_secret: process.env.GITHUB_CLIENT_SECRET, // Cấu hình trong Dashboard Hosting
-        code: code,
-      }),
-    });
-
-    const data = await response.json();
-    return res.status(200).json(data);
-  } catch (error) {
-    return res.status(500).json({ error: "Lỗi kết nối GitHub API" });
-  }
-}
-
-------------------------------
-## 3. Mã nguồn Full Service Xử lý Git (src/services/github.ts)
-Tạo một file dịch vụ riêng để đóng gói toàn bộ các hàm gọi API đến GitHub (Tạo Repo, Commit Code).
-
-// src/services/github.ts
-const GITHUB_API_URL = "https://github.com";
-// 1. Lấy thông tin User để hiển thị Avatar/Usernameexport async function getGitHubUser(token: string) {
-  const res = await fetch(`${GITHUB_API_URL}/user`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return res.json();
-}
-// 2. Tạo một Repository mới trên GitHub của Userexport async function createRepo(token: string, repoName: string) {
-  const res = await fetch(`${GITHUB_API_URL}/user/repos`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      name: repoName,
-      description: "Dự án tạo từ Mobile CodeSandbox IDE",
-      private: false,
-      auto_init: true, // Khởi tạo file README.md mặc định để có nhánh main
-    }),
-  });
-  return res.json();
-}
-// 3. Commit và Push một File lên GitHub (Thay đổi code)export async function pushFileToGit(
-  token: string,
-  owner: string,
-  repo: string,
-  path: string,
-  content: string,
-  commitMessage: string
-) {
-  // Chuyển nội dung code sang mã hóa Base64 theo chuẩn GitHub API yêu cầu
-  const base64Content = btoa(unescape(encodeURIComponent(content)));
-
-  // BƯỚC A: Kiểm tra xem file đã tồn tại trên Repo chưa để lấy mã 'sha' (nếu sửa file)
-  let sha: string | undefined = undefined;
-  try {
-    const fileRes = await fetch(`${GITHUB_API_URL}/repos/${owner}/${repo}/contents/${path}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    if (fileRes.ok) {
-      const fileData = await fileRes.json();
-      sha = fileData.sha;
-    }
-  } catch (e) {
-    // File chưa tồn tại, tạo mới hoàn toàn không cần sha
-  }
-
-  // BƯỚC B: Thực hiện PUT dữ liệu lên Git để commit
-  const res = await fetch(`${GITHUB_API_URL}/repos/${owner}/${repo}/contents/${path}`, {
-    method: "PUT",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      message: commitMessage,
-      content: base64Content,
-      sha: sha, // Nếu có sha tức là ghi đè (update file), không có là tạo mới
-      branch: "main",
-    }),
-  });
-
-  return res.json();
-}
-
-------------------------------
-## 4. Tích hợp Giao diện Git vào Ứng dụng Mobile IDE
-Cập nhật lại thanh điều hướng Tab và bổ sung giao diện Tab Git trực quan để người dùng Mobile quản lý phiên bản dễ dàng.
-
-// Thêm state vào App.tsx của bạnimport React, { useState, useEffect } from "react";import { useSandpack } from "@codesandbox/sandpack-react";import { getGitHubUser, createRepo, pushFileToGit } from "./services/github";
-export default function App() {
-  const [activeTab, setActiveTab] = useState<"files" | "code" | "preview" | "git">("code");
-  const [gitToken, setGitToken] = useState<string | null>(localStorage.getItem("github_token"));
-  const [user, setUser] = useState<any>(null);
-  const [repoName, setRepoName] = useState("");
-  const [commitMsg, setCommitMsg] = useState("Update code from mobile");
-  const [statusText, setStatusText] = useState("");
-
-  const { sandpack } = useSandpack(); // Lấy dữ liệu file hiện tại từ Sandpack
-
-  // Xử lý bắt mã Code từ GitHub redirect về URL
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get("code");
-    if (code && !gitToken) {
-      setStatusText("Đang xác thực với GitHub...");
-      fetch(`/api/github-oauth?code=${code}`)
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.access_token) {
-            localStorage.setItem("github_token", data.access_token);
-            setGitToken(data.access_token);
-            window.history.replaceState({}, document.title, "/"); // Xóa code trên URL đi
-          }
-        });
-    }
-  }, [gitToken]);
-
-  // Lấy thông tin Profile khi đã có token
-  useEffect(() => {
-    if (gitToken) {
-      getGitHubUser(gitToken).then((data) => setUser(data));
-    }
-  }, [gitToken]);
-
-  const handleLoginGitHub = () => {
-    const CLIENT_ID = "MÃ_CLIENT_ID_CỦA_BẠN"; // Thay bằng ID từ GitHub Developer Settings
-    window.location.href = `https://github.com{CLIENT_ID}&scope=repo,user`;
-  };
-
-  const handlePushToNewRepo = async () => {
-    if (!gitToken || !user || !repoName) return;
-    setStatusText("Đang tạo Kho lưu trữ mới...");
-    
-    try {
-      // 1. Tạo Repo
-      const repoData = await createRepo(gitToken, repoName);
-      if (repoData.name) {
-        setStatusText("Đang đẩy file code lên GitHub...");
-        
-        // 2. Lấy nội dung file hiện tại trong IDE để đẩy lên (Ví dụ file App.js)
-        const activeFileCode = sandpack.files[sandpack.activeFile]?.code || "";
-        
-        await pushFileToGit(
-          gitToken,
-          user.login,
-          repoName,
-          sandpack.activeFile.replace(/^\//, ""), // Bỏ dấu gạch chéo ở đầu tên file nếu có
-          activeFileCode,
-          commitMsg
-        );
-        
-        setStatusText("🎉 Đã Push lên GitHub thành công!");
-      } else {
-        setStatusText("Lỗi tạo Repo. Có thể tên đã tồn tại.");
-      }
-    } catch (err) {
-      setStatusText("Lỗi trong quá trình kết nối Git.");
-    }
-  };
-
-  return (
-    <div className="flex flex-col h-screen w-screen bg-darkBg text-white overflow-hidden">
-      {/* Giữ nguyên Header cũ ... */}
-
-      {/* Nội dung vùng chính */}
-      <div className="flex-1 overflow-hidden relative">
-        {/* ... các tab cũ (files, code, preview) giữ nguyên ... */}
-
-        {/* TAB QUẢN LÝ GIT */}
-        {activeTab === "git" && (
-          <div className="p-4 h-full overflow-y-auto bg-darkBg flex flex-col gap-4">
-            <h3 className="text-sm font-bold text-neutral-400 uppercase">GitHub Version Control</h3>
-            
-            {!gitToken ? (
-              <div className="bg-neutral-900 p-6 rounded-lg border border-neutral-800 text-center">
-                <p className="text-sm text-neutral-400 mb-4">Kết nối tài khoản GitHub để lưu trữ mã nguồn và làm việc nhóm từ xa.</p>
-                <button 
-                  onClick={handleLoginGitHub}
-                  className="w-full bg-white text-black font-semibold py-2.5 rounded text-sm active:bg-neutral-200"
-                >
-                  Sign in with GitHub
-                </button>
-              </div>
-            ) : (
-              <div className="flex flex-col gap-4">
-                {/* Profile User */}
-                {user && (
-                  <div className="flex items-center gap-3 bg-neutral-900 p-3 rounded-lg border border-neutral-800">
-                    <img src={user.avatar_url} alt="Avatar" className="w-10 h-10 rounded-full" />
-                    <div>
-                      <h4 className="font-bold text-sm">{user.name || user.login}</h4>
-                      <p className="text-xs text-neutral-400">@{user.login}</p>
-                    </div>
-                  </div>
-                )}
-
-                {/* Form Push Code */}
-                <div className="bg-neutral-900 p-4 rounded-lg border border-neutral-800 flex flex-col gap-3">
-                  <div>
-                    <label className="text-xs text-neutral-400 block mb-1">Tên Repository Mới</label>
-                    <input 
-                      type="text" 
-                      placeholder="my-mobile-app"
-                      value={repoName}
-                      onChange={(e) => setRepoName(e.target.value)}
-                      className="w-full bg-neutral-800 border border-neutral-700 rounded px-3 py-2 text-sm focus:outline-none focus:border-accent"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-xs text-neutral-400 block mb-1">Tin nhắn Commit</label>
-                    <input 
-                      type="text" 
-                      value={commitMsg}
-                      onChange={(e) => setCommitMsg(e.target.value)}
-                      className="w-full bg-neutral-800 border border-neutral-700 rounded px-3 py-2 text-sm focus:outline-none focus:border-accent"
-                    />
-                  </div>
-
-                  <button 
-                    onClick={handlePushToNewRepo}
-                    className="w-full bg-accent text-white font-semibold py-2 rounded text-sm active:opacity-80"
-                  >
-                    🚀 Tạo Repo & Push Code
-                  </button>
-                  
-                  {statusText && (
-                    <p className="text-xs text-center text-yellow-400 mt-1 font-mono">{statusText}</p>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-
-      {/* Navigation Bottom Tabs nâng cấp bổ sung nút Git */}
-      <nav className="h-14 bg-panelBg border-t border-neutral-800 flex justify-around items-center px-2">
-        {/* ... 3 nút cũ ... */}
-        <button
-          onClick={() => setActiveTab("git")}
-          className={`flex flex-col items-center gap-0.5 w-full py-1 text-xs ${
-            activeTab === "git" ? "text-accent font-semibold" : "text-neutral-400"
-          }`}
-        >
-          <span className="text-lg">🌿</span>
-          <span>Git</span>
-        </button>
-      </nav>
-    </div>
-  );
-}
-
-Mã nguồn kết nối GitHub API đã hoàn thiện. Bạn có muốn bổ sung thêm tính năng tải toàn bộ dự án về máy dưới dạng file .zip trực tiếp trên điện thoại để người dùng backup code thủ công không?
-
+# Cài dependencies
+npm install
+# hoặc
+# yarn install
