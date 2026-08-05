@@ -1,3 +1,4 @@
+```markdown
 <!-- ===========================
      README.md — CodeSandbox
      Tác giả: nvht2505-dot
@@ -144,7 +145,76 @@ cd codesandbox
 npm install
 # hoặc
 # yarn install
+```
 
+Chạy local:
+```bash
+# Chạy môi trường dev
+npm start
 
-- Chạy local:
+# Build production
+npm run build
+```
+
+Chạy bằng Docker (mẫu):
+```bash
+docker build -t codesandbox .
+docker run -p 3000:3000 codesandbox
+```
+
+Lưu ý: Nếu repo dùng stack khác (ví dụ: Python, Go), thay thế các bước trên tương ứng.
+
+---
+
+## Cấu trúc dự án (gợi ý)
+- /src — mã nguồn
+- /public — tài nguyên tĩnh
+- /docs — hướng dẫn chi tiết
+- package.json — script & dependencies
+- README.md — tài liệu (bạn đang xem)
+
+(Cập nhật lại phần này nếu cấu trúc repo thực tế khác.)
+
+---
+
+## Đóng góp
+Rất hoan nghênh mọi đóng góp:
+1. Fork repo
+2. Tạo branch: git checkout -b feat/my-feature
+3. Commit và push lên fork
+4. Tạo Pull Request mô tả rõ tính năng/sửa lỗi
+
+Template PR/Issue: cung cấp steps để tái hiện lỗi, môi trường, và log (nếu có).
+
+---
+
+## Nhà tài trợ
+Bạn có thể hỗ trợ dự án bằng cách:
+- Bấm vào nút Sponsor trên GitHub
+- Gửi góp ý, issue, hay PR
+
+<!-- Inline Sponsor SVG (liên kết placeholder) -->
+<div align="center" style="margin:12px 0;">
+  <a href="https://github.com/sponsors/nvht2505-dot" target="_blank" rel="noopener">
+    <svg height="40" viewBox="0 0 160 40" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Sponsor nvht2505-dot">
+      <rect rx="8" width="160" height="40" fill="#0b1226"/>
+      <g transform="translate(14,10)" fill="#fff" font-family="Segoe UI, Roboto">
+        <path d="M6 8 C6 3 12 1 14 6 C16 1 22 3 22 8 C22 14 14 18 14 18 C14 18 6 14 6 8 Z" fill="#ff6b81"/>
+        <text x="36" y="17" font-size="14">Hỗ trợ tác giả</text>
+      </g>
+    </svg>
+  </a>
+</div>
+
+---
+
+## License
+Distributed under the MIT License. Xem file LICENSE để biết chi tiết.
+
+---
+
+## Liên hệ
+- Tác giả: nvht2505-dot
+- Repo: https://github.com/nvht2505-dot/codesandbox
+---
 
