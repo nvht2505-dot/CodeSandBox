@@ -299,3 +299,289 @@ Do Sandpack chạy code người dùng bằng một Iframe độc lập nhằm t
 
  toàn bộ kiến trúc mã nguồn cho cả ứng dụng Mobile IDE, trang Docs và hướng dẫn deploy .
 thêm phần tích hợp tính năng kết nối Git (GitHub API) 
+
+Để tích hợp tính năng kết nối GitHub trực tiếp trên ứng dụng Mobile IDE, chúng ta sẽ sử dụng GitHub REST API kết hợp với GitHub OAuth (thông qua một API Route trung gian hoặc một dịch vụ Backend Serverless nhỏ như Cloudflare Workers/Vercel Functions để bảo mật Client Secret).
+Dưới đây là mã nguồn toàn bộ module xử lý Git và giao diện Tích hợp Git cho ứng dụng Mobile IDE của bạn.
+------------------------------
+## PHẦN 4: TÍCH HỢP TÍNH NĂNG GITHUB TRÊN MOBILE IDE## 1. Luồng hoạt động của GitHub OAuth trên Mobile
+
+   1. Người dùng bấm nút "Kết nối GitHub".
+   2. Ứng dụng chuyển hướng (redirect) user sang trang xác thực của GitHub.
+   3. Sau khi đồng ý, GitHub chuyển hướng ngược lại App của bạn kèm theo một mã code trên URL.
+   4. App gửi code này lên Serverless Function để đổi lấy access_token (token này sẽ lưu vào localStorage).
+   5. Dùng access_token để tạo Repository, Đọc file (Pull) và Đẩy code (Push/Commit).
+
+------------------------------
+## 2. Mã nguồn API Trung gian (Vercel Serverless Function)
+Tạo file api/github-oauth.js để thực hiện đổi mã Code lấy Access Token bảo mật.
+
+// api/github-oauth.jsexport default async function handler(req, res) {
+  const { code } = req.query;
+
+  if (!code) {
+    return res.status(400).json({ error: "Thiếu mã code xác thực" });
+  }
+
+  try {
+    const response = await fetch("https://github.com", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        client_id: process.env.GITHUB_CLIENT_ID,         // Cấu hình trong Dashboard Hosting
+        client_secret: process.env.GITHUB_CLIENT_SECRET, // Cấu hình trong Dashboard Hosting
+        code: code,
+      }),
+    });
+
+    const data = await response.json();
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(500).json({ error: "Lỗi kết nối GitHub API" });
+  }
+}
+
+------------------------------
+## 3. Mã nguồn Full Service Xử lý Git (src/services/github.ts)
+Tạo một file dịch vụ riêng để đóng gói toàn bộ các hàm gọi API đến GitHub (Tạo Repo, Commit Code).
+
+// src/services/github.ts
+const GITHUB_API_URL = "https://github.com";
+// 1. Lấy thông tin User để hiển thị Avatar/Usernameexport async function getGitHubUser(token: string) {
+  const res = await fetch(`${GITHUB_API_URL}/user`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.json();
+}
+// 2. Tạo một Repository mới trên GitHub của Userexport async function createRepo(token: string, repoName: string) {
+  const res = await fetch(`${GITHUB_API_URL}/user/repos`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      name: repoName,
+      description: "Dự án tạo từ Mobile CodeSandbox IDE",
+      private: false,
+      auto_init: true, // Khởi tạo file README.md mặc định để có nhánh main
+    }),
+  });
+  return res.json();
+}
+// 3. Commit và Push một File lên GitHub (Thay đổi code)export async function pushFileToGit(
+  token: string,
+  owner: string,
+  repo: string,
+  path: string,
+  content: string,
+  commitMessage: string
+) {
+  // Chuyển nội dung code sang mã hóa Base64 theo chuẩn GitHub API yêu cầu
+  const base64Content = btoa(unescape(encodeURIComponent(content)));
+
+  // BƯỚC A: Kiểm tra xem file đã tồn tại trên Repo chưa để lấy mã 'sha' (nếu sửa file)
+  let sha: string | undefined = undefined;
+  try {
+    const fileRes = await fetch(`${GITHUB_API_URL}/repos/${owner}/${repo}/contents/${path}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (fileRes.ok) {
+      const fileData = await fileRes.json();
+      sha = fileData.sha;
+    }
+  } catch (e) {
+    // File chưa tồn tại, tạo mới hoàn toàn không cần sha
+  }
+
+  // BƯỚC B: Thực hiện PUT dữ liệu lên Git để commit
+  const res = await fetch(`${GITHUB_API_URL}/repos/${owner}/${repo}/contents/${path}`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      message: commitMessage,
+      content: base64Content,
+      sha: sha, // Nếu có sha tức là ghi đè (update file), không có là tạo mới
+      branch: "main",
+    }),
+  });
+
+  return res.json();
+}
+
+------------------------------
+## 4. Tích hợp Giao diện Git vào Ứng dụng Mobile IDE
+Cập nhật lại thanh điều hướng Tab và bổ sung giao diện Tab Git trực quan để người dùng Mobile quản lý phiên bản dễ dàng.
+
+// Thêm state vào App.tsx của bạnimport React, { useState, useEffect } from "react";import { useSandpack } from "@codesandbox/sandpack-react";import { getGitHubUser, createRepo, pushFileToGit } from "./services/github";
+export default function App() {
+  const [activeTab, setActiveTab] = useState<"files" | "code" | "preview" | "git">("code");
+  const [gitToken, setGitToken] = useState<string | null>(localStorage.getItem("github_token"));
+  const [user, setUser] = useState<any>(null);
+  const [repoName, setRepoName] = useState("");
+  const [commitMsg, setCommitMsg] = useState("Update code from mobile");
+  const [statusText, setStatusText] = useState("");
+
+  const { sandpack } = useSandpack(); // Lấy dữ liệu file hiện tại từ Sandpack
+
+  // Xử lý bắt mã Code từ GitHub redirect về URL
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get("code");
+    if (code && !gitToken) {
+      setStatusText("Đang xác thực với GitHub...");
+      fetch(`/api/github-oauth?code=${code}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.access_token) {
+            localStorage.setItem("github_token", data.access_token);
+            setGitToken(data.access_token);
+            window.history.replaceState({}, document.title, "/"); // Xóa code trên URL đi
+          }
+        });
+    }
+  }, [gitToken]);
+
+  // Lấy thông tin Profile khi đã có token
+  useEffect(() => {
+    if (gitToken) {
+      getGitHubUser(gitToken).then((data) => setUser(data));
+    }
+  }, [gitToken]);
+
+  const handleLoginGitHub = () => {
+    const CLIENT_ID = "MÃ_CLIENT_ID_CỦA_BẠN"; // Thay bằng ID từ GitHub Developer Settings
+    window.location.href = `https://github.com{CLIENT_ID}&scope=repo,user`;
+  };
+
+  const handlePushToNewRepo = async () => {
+    if (!gitToken || !user || !repoName) return;
+    setStatusText("Đang tạo Kho lưu trữ mới...");
+    
+    try {
+      // 1. Tạo Repo
+      const repoData = await createRepo(gitToken, repoName);
+      if (repoData.name) {
+        setStatusText("Đang đẩy file code lên GitHub...");
+        
+        // 2. Lấy nội dung file hiện tại trong IDE để đẩy lên (Ví dụ file App.js)
+        const activeFileCode = sandpack.files[sandpack.activeFile]?.code || "";
+        
+        await pushFileToGit(
+          gitToken,
+          user.login,
+          repoName,
+          sandpack.activeFile.replace(/^\//, ""), // Bỏ dấu gạch chéo ở đầu tên file nếu có
+          activeFileCode,
+          commitMsg
+        );
+        
+        setStatusText("🎉 Đã Push lên GitHub thành công!");
+      } else {
+        setStatusText("Lỗi tạo Repo. Có thể tên đã tồn tại.");
+      }
+    } catch (err) {
+      setStatusText("Lỗi trong quá trình kết nối Git.");
+    }
+  };
+
+  return (
+    <div className="flex flex-col h-screen w-screen bg-darkBg text-white overflow-hidden">
+      {/* Giữ nguyên Header cũ ... */}
+
+      {/* Nội dung vùng chính */}
+      <div className="flex-1 overflow-hidden relative">
+        {/* ... các tab cũ (files, code, preview) giữ nguyên ... */}
+
+        {/* TAB QUẢN LÝ GIT */}
+        {activeTab === "git" && (
+          <div className="p-4 h-full overflow-y-auto bg-darkBg flex flex-col gap-4">
+            <h3 className="text-sm font-bold text-neutral-400 uppercase">GitHub Version Control</h3>
+            
+            {!gitToken ? (
+              <div className="bg-neutral-900 p-6 rounded-lg border border-neutral-800 text-center">
+                <p className="text-sm text-neutral-400 mb-4">Kết nối tài khoản GitHub để lưu trữ mã nguồn và làm việc nhóm từ xa.</p>
+                <button 
+                  onClick={handleLoginGitHub}
+                  className="w-full bg-white text-black font-semibold py-2.5 rounded text-sm active:bg-neutral-200"
+                >
+                  Sign in with GitHub
+                </button>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-4">
+                {/* Profile User */}
+                {user && (
+                  <div className="flex items-center gap-3 bg-neutral-900 p-3 rounded-lg border border-neutral-800">
+                    <img src={user.avatar_url} alt="Avatar" className="w-10 h-10 rounded-full" />
+                    <div>
+                      <h4 className="font-bold text-sm">{user.name || user.login}</h4>
+                      <p className="text-xs text-neutral-400">@{user.login}</p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Form Push Code */}
+                <div className="bg-neutral-900 p-4 rounded-lg border border-neutral-800 flex flex-col gap-3">
+                  <div>
+                    <label className="text-xs text-neutral-400 block mb-1">Tên Repository Mới</label>
+                    <input 
+                      type="text" 
+                      placeholder="my-mobile-app"
+                      value={repoName}
+                      onChange={(e) => setRepoName(e.target.value)}
+                      className="w-full bg-neutral-800 border border-neutral-700 rounded px-3 py-2 text-sm focus:outline-none focus:border-accent"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs text-neutral-400 block mb-1">Tin nhắn Commit</label>
+                    <input 
+                      type="text" 
+                      value={commitMsg}
+                      onChange={(e) => setCommitMsg(e.target.value)}
+                      className="w-full bg-neutral-800 border border-neutral-700 rounded px-3 py-2 text-sm focus:outline-none focus:border-accent"
+                    />
+                  </div>
+
+                  <button 
+                    onClick={handlePushToNewRepo}
+                    className="w-full bg-accent text-white font-semibold py-2 rounded text-sm active:opacity-80"
+                  >
+                    🚀 Tạo Repo & Push Code
+                  </button>
+                  
+                  {statusText && (
+                    <p className="text-xs text-center text-yellow-400 mt-1 font-mono">{statusText}</p>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Navigation Bottom Tabs nâng cấp bổ sung nút Git */}
+      <nav className="h-14 bg-panelBg border-t border-neutral-800 flex justify-around items-center px-2">
+        {/* ... 3 nút cũ ... */}
+        <button
+          onClick={() => setActiveTab("git")}
+          className={`flex flex-col items-center gap-0.5 w-full py-1 text-xs ${
+            activeTab === "git" ? "text-accent font-semibold" : "text-neutral-400"
+          }`}
+        >
+          <span className="text-lg">🌿</span>
+          <span>Git</span>
+        </button>
+      </nav>
+    </div>
+  );
+}
+
+Mã nguồn kết nối GitHub API đã hoàn thiện. Bạn có muốn bổ sung thêm tính năng tải toàn bộ dự án về máy dưới dạng file .zip trực tiếp trên điện thoại để người dùng backup code thủ công không?
+
