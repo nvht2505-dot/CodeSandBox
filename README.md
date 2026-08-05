@@ -145,5 +145,6 @@ npm install
 # hoặc
 # yarn install
 
-Chạy local:
+
+- Chạy local:
 
