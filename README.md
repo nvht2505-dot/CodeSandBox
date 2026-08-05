@@ -144,3 +144,6 @@ cd codesandbox
 npm install
 # hoặc
 # yarn install
+
+Chạy local:
+
