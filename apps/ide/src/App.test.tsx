@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import "@testing-library/jest-dom/vitest";
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
-import type { ReactNode } from "react";
+import { StrictMode, type ReactNode } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
@@ -77,6 +77,21 @@ describe("Mobile IDE shell", () => {
 
     const provider = screen.getByTestId("sandpack-provider");
     expect(JSON.parse(provider.dataset.files ?? "null")).toEqual({ "/App.js": { code: "const restored = true;" } });
+  });
+
+  it("exchanges the OAuth code only once under StrictMode", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, json: async () => ({ access_token: "token-xyz" }) });
+    vi.stubGlobal("fetch", fetchMock);
+    window.history.replaceState({}, "", "/?code=oauth-code");
+
+    render(
+      <StrictMode>
+        <App />
+      </StrictMode>,
+    );
+
+    await waitFor(() => expect(window.localStorage.getItem("github_token")).toBe("token-xyz"));
+    expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
   it("exchanges the OAuth code for a token and cleans the URL", async () => {
