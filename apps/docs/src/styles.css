@@ -1,0 +1,7 @@
+body { margin: 0; font-family: system-ui, sans-serif; }
+.docs-shell { background: #fafaf9; color: #262626; display: flex; min-height: 100vh; }
+aside { background: white; border-right: 1px solid #e5e5e5; display: flex; flex-direction: column; gap: 0.5rem; padding: 1.5rem; width: 16rem; }
+button { background: transparent; border: 0; border-radius: 0.5rem; color: #525252; padding: 0.65rem; text-align: left; }
+button.active { background: #171717; color: white; }
+main { max-width: 48rem; padding: 3rem; }
+@media (max-width: 768px) { .docs-shell { flex-direction: column; } aside { border-right: 0; border-bottom: 1px solid #e5e5e5; flex-direction: row; overflow-x: auto; width: auto; } }
