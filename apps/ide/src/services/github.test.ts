@@ -29,6 +29,12 @@ describe("GitHub service", () => {
     expect(url.searchParams.get("scope")).toBe("repo user");
   });
 
+  it("includes the CSRF state in the authorize URL when provided", () => {
+    const url = new URL(getGitHubAuthorizeUrl("client-123", "state-abc"));
+
+    expect(url.searchParams.get("state")).toBe("state-abc");
+  });
+
   it("fetches the authenticated user with a bearer token", async () => {
     fetchMock.mockResolvedValue(jsonResponse({ login: "octocat" }));
 

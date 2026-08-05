@@ -47,7 +47,9 @@ function GitPanel({ gitToken, onTokenChange }: { gitToken: string | null; onToke
       setStatusText("Thiếu VITE_GITHUB_CLIENT_ID trong cấu hình môi trường.");
       return;
     }
-    window.location.href = getGitHubAuthorizeUrl(clientId);
+    const state = crypto.randomUUID();
+    sessionStorage.setItem(OAUTH_STATE_KEY, state);
+    window.location.href = getGitHubAuthorizeUrl(clientId, state);
   };
 
   const handlePushToNewRepo = async () => {
@@ -80,6 +82,8 @@ function GitPanel({ gitToken, onTokenChange }: { gitToken: string | null; onToke
   );
 }
 
+const OAUTH_STATE_KEY = "github_oauth_state";
+
 function stripOAuthQueryParams() {
   const params = new URLSearchParams(window.location.search);
   params.delete("code");
@@ -96,11 +100,16 @@ export default function App() {
   const oauthCodeConsumed = useRef(false);
 
   useEffect(() => {
-    const code = new URLSearchParams(window.location.search).get("code");
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
     if (!code || oauthCodeConsumed.current) return;
 
     oauthCodeConsumed.current = true;
+    const expectedState = sessionStorage.getItem(OAUTH_STATE_KEY);
+    sessionStorage.removeItem(OAUTH_STATE_KEY);
     stripOAuthQueryParams();
+
+    if (!expectedState || params.get("state") !== expectedState) return;
 
     exchangeGitHubCode(code)
       .then((data) => {
@@ -117,9 +126,9 @@ export default function App() {
       <SandpackProvider template="react" theme="dark" files={savedCode ? { "/App.js": { code: savedCode } } : undefined}>
         <CodeAutoSaver />
         <main>
-          {activeTab === "files" && <section className="panel"><SandpackFileExplorer /></section>}
-          {activeTab === "code" && <section className="editor"><SandpackCodeEditor showTabs showLineNumbers showInlineErrors wrapContent closableTabs={false} /><QuickKeysToolbar /></section>}
-          {activeTab === "preview" && <section className="preview"><SandpackPreview showNavigator showRefreshButton showOpenInCodeSandbox={false} /></section>}
+          <section className="panel" hidden={activeTab !== "files"}><SandpackFileExplorer /></section>
+          <section className="editor" hidden={activeTab !== "code"}><SandpackCodeEditor showTabs showLineNumbers showInlineErrors wrapContent closableTabs={false} /><QuickKeysToolbar /></section>
+          <section className="preview" hidden={activeTab !== "preview"}><SandpackPreview showNavigator showRefreshButton showOpenInCodeSandbox={false} /></section>
           {activeTab === "git" && <GitPanel gitToken={gitToken} onTokenChange={setGitToken} />}
         </main>
       </SandpackProvider>
