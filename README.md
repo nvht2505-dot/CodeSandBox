@@ -297,4 +297,5 @@ Do Sandpack chạy code người dùng bằng một Iframe độc lập nhằm t
   X-Content-Type-Options: nosniff
   Content-Security-Policy: frame-src 'self' https://*.codesandbox.io;
 
-Tôi đã cung cấp toàn bộ kiến trúc mã nguồn cho cả ứng dụng Mobile IDE, trang Docs và hướng dẫn deploy. Bạn có cần tôi viết thêm phần tích hợp tính năng kết nối Git (GitHub API) để người dùng lưu và commit code trực tiếp từ điện thoại không?
+ toàn bộ kiến trúc mã nguồn cho cả ứng dụng Mobile IDE, trang Docs và hướng dẫn deploy .
+thêm phần tích hợp tính năng kết nối Git (GitHub API) 
