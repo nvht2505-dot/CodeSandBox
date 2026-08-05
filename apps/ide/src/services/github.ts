@@ -15,7 +15,13 @@ export function getGitHubAuthorizeUrl(clientId: string) {
   return url.toString();
 }
 
-export async function exchangeGitHubCode(code: string) {
+export interface GitHubTokenResponse {
+  access_token?: string;
+  error?: string;
+  error_description?: string;
+}
+
+export async function exchangeGitHubCode(code: string): Promise<GitHubTokenResponse> {
   const response = await fetch(GITHUB_OAUTH_TOKEN_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json", Accept: "application/json" },
