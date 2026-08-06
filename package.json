@@ -29,6 +29,7 @@
     "vitest": "latest"
   },
   "dependencies": {
-    "@monaco-editor/react": "^4.7.0"
+    "@monaco-editor/react": "^4.7.0",
+    "brew": "^0.0.8"
   }
 }
