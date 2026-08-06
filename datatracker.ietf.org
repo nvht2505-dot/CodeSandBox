@@ -1,0 +1,376 @@
+RFC 2026: The Internet Standards Process -- Revision 3
+00
+01
+02
+03
+04
+05
+06
+rfc2026
+Sep 1995
+Jan 1996
+Apr 1996
+Oct 1996
+draft-ietf-poised95-std-proc-3
+rfc2026
+
+Nhóm làm việc mạng S. Bradner
+Yêu cầu góp ý: Đại học Harvard năm 2026
+BCP: Ngày 9 tháng 10 năm 1996
+Những từ lỗi thời: 1602
+Thể loại: Thực tiễn tốt nhất hiện nay
+
+              Quy trình tiêu chuẩn Internet -- Bản sửa đổi 3
+
+Tình trạng của bản ghi nhớ này
+
+   Tài liệu này quy định các thực tiễn tốt nhất hiện hành về Internet dành cho...
+   Cộng đồng Internet, và yêu cầu thảo luận và đề xuất cho
+   những cải tiến. Việc phân phối bản ghi nhớ này là không giới hạn.
+
+Tóm tắt
+
+   Bản ghi nhớ này ghi lại quy trình mà cộng đồng Internet đã sử dụng để
+   Việc tiêu chuẩn hóa các giao thức và quy trình. Nó định nghĩa...
+   các giai đoạn trong quá trình tiêu chuẩn hóa, các yêu cầu để di chuyển một
+   Ghi chép lại các giai đoạn giữa các bước và các loại tài liệu được sử dụng trong quá trình này.
+   quy trình. Nó cũng đề cập đến quyền sở hữu trí tuệ và
+   Các vấn đề bản quyền liên quan đến quy trình thiết lập tiêu chuẩn.
+
+Mục lục
+
+   1. GIỚI THIỆU....................................................2
+     1.1 Các tiêu chuẩn Internet...........................................3
+     1.2 Quy trình tiêu chuẩn Internet...............................3
+     1.3 Cấu trúc của tài liệu này................................5
+   2. ẤN PHẨM LIÊN QUAN ĐẾN TIÊU CHUẨN INTERNET.........................5
+     2.1 Yêu cầu góp ý (RFCs).................................5
+     2.2 Bản thảo trên Internet..............................................7
+   3. THÔNG SỐ KỸ THUẬT TIÊU CHUẨN INTERNET................................8
+     3.1 Thông số kỹ thuật (TS).................................8
+     3.2 Tuyên bố về phạm vi áp dụng (AS).................................8
+     3.3 Mức độ yêu cầu...........................................9
+   4. LĨNH VỰC TIÊU CHUẨN INTERNET...................................10
+     4.1 Mức độ trưởng thành của chương trình theo tiêu chuẩn.............................11
+       4.1.1 Tiêu chuẩn đề xuất.......................................11
+       4.1.2 Dự thảo tiêu chuẩn..........................................12
+       4.1.3 Tiêu chuẩn Internet.......................................13
+     4.2 Mức độ trưởng thành của các chương trình không theo tiêu chuẩn.........................13
+       4.2.1 Thí nghiệm............................................13
+       4.2.2 Thông tin...........................................14
+       4.2.3 Quy trình cho các RFC thử nghiệm và thông tin......14
+       4.2.4 Lịch sử................................................15
+
+Bradner Thực tiễn Tốt nhất Hiện tại [Trang 1] 
+Quy trình Tiêu chuẩn Internet RFC 2026 Tháng 10 năm 1996
+
+   5. Các RFC về Thực hành Tốt nhất Hiện tại (BCP)..............................15
+     5.1 Quy trình xem xét BCP..........................................16
+   6. QUY TRÌNH TIÊU CHUẨN INTERNET.................................17
+     6.1 Các hành động theo tiêu chuẩn...........................................17
+       6.1.1 Khởi đầu hành động....................................17
+       6.1.2 Đánh giá và phê duyệt của IESG................................17
+       6.1.3 Ấn phẩm.............................................18
+     6.2 Tiến bộ theo lộ trình tiêu chuẩn............................19
+     6.3 Sửa đổi một tiêu chuẩn.........................................20
+     6.4 Loại bỏ một tiêu chuẩn.........................................20
+     6.5 Giải quyết xung đột và khiếu nại.............................21
+       6.5.1 Giải quyết tranh chấp trong Nhóm làm việc...................................21
+       6.5.2 Các lỗi trong quy trình.........................................22
+       6.5.3 Các câu hỏi về thủ tục áp dụng........................22
+       6.5.4 Thủ tục kháng cáo........................................23
+   7. TIÊU CHUẨN VÀ THÔNG SỐ KỸ THUẬT BÊN NGOÀI..........................23
+     7.1 Sử dụng các thông số kỹ thuật bên ngoài..............................24
+       7.1.1 Kết hợp một tiêu chuẩn mở.......................24
+       7.1.2 Kết hợp các thông số kỹ thuật khác.................24
+       7.1.3 Giả định..............................................25
+   8. THÔNG BÁO VÀ LƯU TRỮ HỒ SƠ......................................25
+   9. THAY ĐỔI QUY TRÌNH.............................................26
+     9.1 Quy trình xử lý sai lệch.......................................26
+     9.2 Các trường hợp loại trừ...................................................27
+   10. QUYỀN SỞ HỮU TRÍ TUỆ..................................27
+     10.1. Chính sách chung............................................27
+     10.2 Nghĩa vụ bảo mật...............................28
+     10.3. Quyền và Giấy phép....................................28
+       10.3.1. Tất cả các khoản đóng góp......................................28
+       10.3.2. Tài liệu theo tiêu chuẩn..............................29
+       10.3.3 Xác định mức độ hợp lý và
+              Điều khoản không phân biệt đối xử................................30
+     10.4. Thông báo...................................................30
+   11. LỜI CẢM ƠN................................................32
+   12. CÁC VẤN ĐỀ AN NINH........................................32
+   13. TÀI LIỆU THAM KHẢO.....................................................33
+   14. ĐỊNH NGHĨA CÁC THUẬT NGỮ...........................................33
+   15. ĐỊA CHỈ CỦA TÁC GIẢ...............................................34
+   PHỤ LỤC A: BẢNG THUẬT NGỮ VIẾT TẮT...................................35
+
+Bradner Thực tiễn tốt nhất hiện nay [Trang 2] 
+Quy trình tiêu chuẩn Internet RFC 2026 Tháng 10 năm 1996
+
+1. GIỚI THIỆU
+
+   Bản ghi nhớ này mô tả quy trình hiện đang được Internet sử dụng.
+   Cộng đồng nhằm tiêu chuẩn hóa các giao thức và quy trình.
+   Quá trình xây dựng tiêu chuẩn Internet là một hoạt động của Hiệp hội Internet.
+   được tổ chức và quản lý thay mặt cho cộng đồng Internet bởi
+   Ban Kiến trúc Internet (IAB) và Kỹ thuật Internet
+   Nhóm chỉ đạo (IESG).
+
+1.1 Các tiêu chuẩn Internet
+
+   Internet, một sự hợp tác quốc tế được tổ chức lỏng lẻo của
+   Các mạng tự trị, kết nối với nhau, hỗ trợ kết nối giữa các máy chủ.
+   giao tiếp thông qua việc tự nguyện tuân thủ các giao thức mở và
+   Các quy trình được định nghĩa bởi Tiêu chuẩn Internet. Ngoài ra còn có nhiều
+   các mạng lưới liên kết biệt lập, không được kết nối với nhau.
+   Internet toàn cầu nhưng sử dụng các tiêu chuẩn Internet.
+
+   Quy trình tiêu chuẩn Internet được mô tả trong tài liệu này là
+   liên quan đến tất cả các giao thức, thủ tục và quy ước
+   được sử dụng trong hoặc bởi Internet, bất kể chúng có phải là một phần của Internet hay không.
+   Bộ giao thức TCP/IP. Trong trường hợp các giao thức được phát triển và/hoặc
+   Tuy nhiên, Internet được tiêu chuẩn hóa bởi các tổ chức không thuộc Internet.
+   Quy trình tiêu chuẩn thường được áp dụng cho việc áp dụng giao thức.
+   hoặc quy trình trong bối cảnh Internet, không theo quy định cụ thể của
+   Bản thân giao thức.
+
+   Nhìn chung, tiêu chuẩn Internet là một đặc tả kỹ thuật ổn định.
+   và được hiểu rõ, có năng lực chuyên môn, có nhiều,
+   các triển khai độc lập và có khả năng tương tác với nhau với những ưu điểm đáng kể
+   kinh nghiệm vận hành, nhận được sự ủng hộ đáng kể từ công chúng và là
+   Có thể thấy hữu ích ở một số hoặc tất cả các phần của Internet.
+
+1.2 Quy trình tiêu chuẩn Internet
+
+   Tóm lại, quy trình tạo ra một tiêu chuẩn Internet là như sau:
+   Đơn giản: một bản đặc tả trải qua một giai đoạn phát triển.
+   và nhiều lần xem xét lại bởi cộng đồng mạng và
+   Bản sửa đổi dựa trên kinh nghiệm, được thông qua như một Tiêu chuẩn bởi
+   cơ quan có thẩm quyền (xem bên dưới) và được công bố. Trên thực tế,
+   quá trình phức tạp hơn do (1) khó khăn trong việc tạo ra
+   (2) cần phải xem xét các thông số kỹ thuật chất lượng cao;
+   lợi ích của tất cả các bên bị ảnh hưởng; (3) tầm quan trọng của
+   thiết lập sự đồng thuận rộng rãi trong cộng đồng; và (4) khó khăn
+   đánh giá tính hữu ích của một đặc tả cụ thể cho
+   Cộng đồng Internet.
+
+Bradner Thực tiễn tốt nhất hiện nay [Trang 3] 
+Quy trình tiêu chuẩn Internet RFC 2026 Tháng 10 năm 1996
+
+   Các mục tiêu của Quy trình Tiêu chuẩn Internet là:
+   o Sự xuất sắc về kỹ thuật;
+   o Việc triển khai và thử nghiệm trước đó;
+   Tài liệu rõ ràng, ngắn gọn và dễ hiểu;
+   o sự cởi mở và công bằng; và
+   sự đúng giờ.
+
+   Các thủ tục được mô tả trong tài liệu này được thiết kế để đảm bảo tính công bằng.
+   cởi mở và khách quan; phản ánh thực tiễn hiện có (đã được chứng minh); và để
+   Hãy linh hoạt.
+
+   o Các thủ tục này nhằm mục đích cung cấp một sự công bằng, minh bạch và
+      cơ sở khách quan để phát triển, đánh giá và áp dụng Internet
+      Các tiêu chuẩn. Chúng cung cấp nhiều cơ hội tham gia và
+      ý kiến đóng góp từ tất cả các bên quan tâm. Ở mỗi giai đoạn của
+      Trong quá trình tiêu chuẩn hóa, một đặc tả kỹ thuật được thảo luận nhiều lần.
+      và những ưu điểm của nó được tranh luận trong các cuộc họp công khai và/hoặc trên các phương tiện điện tử công cộng.
+      danh sách gửi thư, và nó được cung cấp để xem xét trên toàn thế giới.
+      Danh bạ trực tuyến.
+
+   o Các thủ tục này được thực hiện nhằm mục đích công nhận và áp dụng một cách rõ ràng.
+      các thực tiễn được chấp nhận rộng rãi. Do đó, một đặc tả ứng cử viên
+      phải được triển khai và kiểm tra để đảm bảo hoạt động chính xác.
+      khả năng tương tác giữa nhiều bên độc lập và được sử dụng trong
+      môi trường ngày càng khắt khe hơn, trước khi nó có thể được áp dụng như một phương tiện.
+      Một tiêu chuẩn Internet.
+
+   o Các quy trình này mang lại sự linh hoạt rất lớn để thích ứng với
+      sự đa dạng về hoàn cảnh xảy ra trong
+      quy trình tiêu chuẩn hóa. Kinh nghiệm đã chứng minh tính linh hoạt này đối với
+      Điều này đóng vai trò thiết yếu trong việc đạt được các mục tiêu đã nêu ở trên.
+
+   Mục tiêu của năng lực kỹ thuật, yêu cầu về kiến thức chuyên môn trước đó.
+   việc triển khai và thử nghiệm, và sự cần thiết phải cho phép tất cả các bên liên quan
+   Việc tham gia đóng góp ý kiến từ tất cả các bên đều đòi hỏi thời gian và công sức đáng kể. Về vấn đề này,
+   Mặt khác, công nghệ mạng hiện nay đang phát triển nhanh chóng.
+   đòi hỏi việc phát triển các tiêu chuẩn kịp thời. Các tiêu chuẩn Internet
+   Quy trình này nhằm mục đích cân bằng những mục tiêu mâu thuẫn đó. Quy trình
+   Người ta tin rằng nó phải ngắn gọn và đơn giản nhất có thể mà không làm mất đi tính hiệu quả.
+   Sự xuất sắc về mặt kỹ thuật, thử nghiệm kỹ lưỡng trước khi áp dụng tiêu chuẩn.
+   hoặc sự cởi mở và công bằng.
+
+   Từ khi ra đời, Internet đã và dự kiến sẽ vẫn là,
+   một hệ thống đang phát triển mà các thành viên tham gia thường xuyên đưa ra các yếu tố mới.
+   các yêu cầu và công nghệ được tích hợp vào thiết kế và triển khai. Người dùng
+   của Internet và các nhà cung cấp thiết bị, phần mềm và
+   Các dịch vụ hỗ trợ nó cần phải dự đoán và đón nhận sự phát triển này.
+   như một nguyên tắc chính của triết lý Internet.
+
+Bradner Thực tiễn tốt nhất hiện nay [Trang 4] 
+Quy trình tiêu chuẩn Internet RFC 2026 Tháng 10 năm 1996
+
+   Các quy trình được mô tả trong tài liệu này là kết quả của một số nghiên cứu.
+   trải qua nhiều năm tiến hóa, được thúc đẩy bởi cả nhu cầu của sự phát triển và
+   Cộng đồng Internet ngày càng đa dạng, và điều này được chứng minh qua kinh nghiệm.
+
+Bradner Thực tiễn tốt nhất hiện nay [Trang 5] 
+Quy trình tiêu chuẩn Internet RFC 2026 Tháng 10 năm 1996
+
+1.3 Cấu trúc của tài liệu này
+
+   Phần 2 mô tả các ấn phẩm và kho lưu trữ của Internet.
+   Quy trình tiêu chuẩn. Phần 3 mô tả các loại Internet.
+   các thông số kỹ thuật tiêu chuẩn. Phần 4 mô tả các tiêu chuẩn Internet.
+   theo dõi thông số kỹ thuật. Phần 5 mô tả Thực tiễn tốt nhất hiện hành
+   RFC. Mục 6 mô tả quy trình và các quy tắc cho Internet.
+   tiêu chuẩn hóa. Mục 7 quy định cách thức mà các bên ngoài-
+   các thông số kỹ thuật và quy trình được tài trợ, được phát triển và kiểm soát bởi
+   Các tổ chức tiêu chuẩn khác hoặc do các bên khác quản lý được xử lý trong phạm vi Internet.
+   Quy trình tiêu chuẩn. Mục 8 mô tả các yêu cầu đối với thông báo.
+   và việc lưu giữ hồ sơ. Mục 9 định nghĩa một quy trình miễn trừ để cho phép
+   Các trường hợp ngoại lệ một lần đối với một số yêu cầu trong tài liệu này.
+   Mục 10 trình bày các quy tắc cần thiết để bảo vệ
+   quyền sở hữu trí tuệ trong bối cảnh phát triển và
+   sử dụng các tiêu chuẩn Internet. Mục 11 bao gồm lời cảm ơn về
+   Một số người tham gia vào việc tạo ra tài liệu này. Mục 12
+   Lưu ý rằng tài liệu này không đề cập đến các vấn đề an ninh.
+   Mục 13 chứa danh sách các tài liệu tham khảo được đánh số. Mục 14
+   Phần này chứa định nghĩa của một số thuật ngữ được sử dụng trong tài liệu này.
+   Mục 15 liệt kê địa chỉ email và địa chỉ bưu điện của tác giả. Phụ lục A
+   Chứa danh sách các từ viết tắt thường dùng.
+
+2. ẤN PHẨM LIÊN QUAN ĐẾN TIÊU CHUẨN INTERNET
+
+2.1 Yêu cầu góp ý (RFC)
+
+   Mỗi phiên bản riêng biệt của một đặc tả kỹ thuật liên quan đến tiêu chuẩn Internet.
+   được công bố như một phần của tài liệu "Yêu cầu góp ý" (RFC).
+   loạt bài viết này là kênh xuất bản chính thức dành cho...
+   Các tài liệu về tiêu chuẩn Internet và các ấn phẩm khác của IESG, IAB,
+   và cộng đồng Internet. Các RFC có thể được lấy từ một số nguồn khác nhau.
+   Các máy chủ Internet sử dụng FTP ẩn danh, gopher, World Wide Web và các giao thức khác.
+   Hệ thống truy xuất tài liệu trên Internet.
+
+   Bộ tài liệu RFC về mạng máy tính bắt đầu từ năm 1969 như một phần của...
+   dự án mạng diện rộng ARPA (ARPANET) ban đầu (xem
+   Phụ lục A (bảng thuật ngữ các từ viết tắt). Các RFC bao gồm một phạm vi rộng lớn.
+   các chủ đề bổ sung ngoài Tiêu chuẩn Internet, từ những cuộc thảo luận ban đầu về
+   Các khái niệm nghiên cứu mới đến các bản ghi nhớ về tình trạng của Internet. RFC
+   Việc xuất bản là trách nhiệm trực tiếp của Biên tập viên RFC, theo quy định.
+   định hướng chung của IAB.
+
+Bradner Thực tiễn tốt nhất hiện nay [Trang 6] 
+Quy trình tiêu chuẩn Internet RFC 2026 Tháng 10 năm 1996
+
+   Các quy tắc về định dạng và gửi RFC được xác định trong [5].
+   Mọi RFC đều có sẵn ở dạng văn bản ASCII. Một số RFC cũng có sẵn
+   ở các định dạng khác. Các phiên bản khác của RFC có thể chứa tài liệu.
+   (chẳng hạn như sơ đồ và hình vẽ) không có trong ASCII
+   phiên bản này có thể được định dạng khác nhau.
+
+      *********************************************************
+      * *
+      * Yêu cầu nghiêm ngặt hơn áp dụng cho chương trình theo tiêu chuẩn *
+      * Thông số kỹ thuật: phiên bản văn bản ASCII là *
+      * tài liệu tham khảo chính xác, và do đó nó phải là một *
+      * Bản mô tả tiêu chuẩn đầy đủ và chính xác, *
+      * Bao gồm tất cả các sơ đồ và hình minh họa cần thiết. *
+      * *
+      *********************************************************
+
+   Tình trạng của các đặc tả giao thức và dịch vụ Internet là
+   Tóm tắt định kỳ trong một RFC có tiêu đề "Internet Official"
+   Tiêu chuẩn giao thức" [1]. RFC này cho thấy mức độ trưởng thành và
+   các thông tin hữu ích khác cho từng giao thức hoặc dịch vụ Internet
+   thông số kỹ thuật (xem mục 3).
+
+   Một số RFC ghi lại các tiêu chuẩn Internet. Các RFC này tạo thành 'STD'.
+   loạt con của loạt RFC [4]. Khi một đặc tả đã được
+   Khi được chấp nhận làm tiêu chuẩn Internet, nó được gắn thêm nhãn.
+   "STDxxx", nhưng nó vẫn giữ nguyên số RFC và vị trí của nó trong RFC.
+   loạt. (xem mục 4.1.3)
+
+   Một số RFC chuẩn hóa kết quả của các cuộc thảo luận cộng đồng về...
+   Những tuyên bố về nguyên tắc hoặc kết luận về cách tốt nhất để
+   Thực hiện một số thao tác hoặc chức năng xử lý của IETF. Các RFC này tạo thành
+   Bản đặc tả này đã được thông qua như một BCP (Business Continuity Planning), nó được đưa ra.
+   nhãn bổ sung "BCPxxx", nhưng nó vẫn giữ nguyên số RFC và vị trí của nó.
+   trong loạt RFC. (xem mục 5)
+
+   Không phải tất cả các thông số kỹ thuật của giao thức hoặc dịch vụ dành cho Internet đều như vậy.
+   nên hoặc sẽ trở thành các tiêu chuẩn Internet hoặc các quy trình liên tục kinh doanh (BCP). Những thứ không phải là tiêu chuẩn như vậy.
+   Thông số kỹ thuật của bản nhạc không thuộc phạm vi điều chỉnh của các quy định về Internet.
+   tiêu chuẩn hóa. Các thông số kỹ thuật theo dõi không theo tiêu chuẩn có thể được công bố.
+   có thể trực tiếp phân loại là RFC "Thử nghiệm" hoặc "Thông tin" tùy theo quyết định.
+   của Biên tập viên RFC tham khảo ý kiến của IESG (xem mục 4.2).
+
+Bradner Thực tiễn tốt nhất hiện nay [Trang 7] 
+Quy trình tiêu chuẩn Internet RFC 2026 Tháng 10 năm 1996
+
+      ********************************************************
+      * *
+      * Điều quan trọng cần nhớ là không phải tất cả các RFC đều như nhau *
+      * là các tài liệu theo tiêu chuẩn, và không phải tất cả đều như vậy *
+      * Các tài liệu theo tiêu chuẩn đạt đến mức độ *
+      * Tiêu chuẩn Internet. Tương tự, không phải tất cả các RFC đều như vậy. *
+      * Những nội dung mô tả các thực tiễn hiện hành đã được cung cấp *
+      * Quy trình xem xét và phê duyệt để trở thành BCP. Xem *
+      * RFC-1796 [6] để biết thêm thông tin. *
+      * *
+      ********************************************************
+
+2.2 Bản thảo trên Internet
+
+   Trong quá trình xây dựng bản đặc tả kỹ thuật, các phiên bản dự thảo của...
+   Các tài liệu được cung cấp để xem xét và góp ý không chính thức bởi
+   đặt chúng vào thư mục "Internet-Drafts" của IETF, đó là
+   được sao chép trên một số máy chủ Internet. Điều này tạo ra một quá trình phát triển liên tục.
+   Tài liệu làm việc được cung cấp sẵn cho nhiều người, tạo điều kiện thuận lợi cho việc này.
+   quá trình xem xét và chỉnh sửa.
+
+   Bản thảo Internet được xuất bản dưới dạng RFC, hoặc vẫn còn tồn tại.
+   không thay đổi trong thư mục Internet-Drafts trong hơn sáu tháng.
+   mà không được IESG khuyến nghị công bố dưới dạng RFC, là
+   Đơn giản là bị xóa khỏi thư mục Internet-Drafts. Bất cứ lúc nào, một
+   Bản thảo Internet có thể được thay thế bằng một phiên bản mới hơn của cùng một tài liệu.
+   đặc tả kỹ thuật, khởi động lại thời hạn chờ sáu tháng.
+
+   Bản thảo trên Internet KHÔNG phải là phương tiện để "công bố" một bản đặc tả kỹ thuật;
+   Các thông số kỹ thuật được công bố thông qua cơ chế RFC được mô tả trong
+   phần trước. Bản nháp trên Internet không có tư cách pháp lý chính thức và là
+   Có thể thay đổi hoặc xóa bỏ bất cứ lúc nào.
+
+      ********************************************************
+      * *
+      * Tuyệt đối không được sử dụng bản thảo trên Internet*
+      * được trích dẫn trong bất kỳ bài báo, báo cáo hoặc yêu cầu nào- *
+      * Đề xuất này chỉ mang tính chất tham khảo, và nhà cung cấp cũng không nên tự nhận là đã tuân thủ.
+      * kèm theo bản nháp trên Internet. *
+      * *
+      ********************************************************
+
+Bradner Thực tiễn tốt nhất hiện nay [Trang 8] 
+Quy trình tiêu chuẩn Internet RFC 2026 Tháng 10 năm 1996
+
+   Lưu ý: Có thể tham chiếu đến đặc tả kỹ thuật theo tiêu chuẩn.
+   có thể được kỳ vọng một cách hợp lý sẽ được công bố dưới dạng RFC bằng cách sử dụng
+   Cụm từ "Đang trong quá trình hoàn thiện" không đề cập đến bản nháp trên Internet.
+   Điều này cũng có thể được thực hiện trong chính tài liệu tiêu chuẩn, miễn là...
+   vì bản đặc tả kỹ thuật trong đó có đề cập đến sẽ được xem như là một
+   Tài liệu hoàn chỉnh và dễ hiểu, có hoặc không có tham chiếu đến...
+   "Đang trong quá trình hoàn thiện".
+
+3. THÔNG SỐ KỸ THUẬT TIÊU CHUẨN INTERNET
+
+   Các thông số kỹ thuật tuân theo Quy trình Tiêu chuẩn Internet thuộc vào...
+   một trong hai loại: Thông số kỹ thuật (TS) và
+   Tuyên bố về phạm vi áp dụng (AS).
+
+3.1 Thông số kỹ thuật (TS)
+
+   Bản đặc tả kỹ thuật là bất kỳ mô tả nào về giao thức, dịch vụ,
+   thủ tục, quy ước hoặc định dạng. Nó có thể mô tả đầy đủ tất cả.
+   các khía cạnh liên quan của chủ đề, hoặc nó có thể bỏ qua một hoặc nhiều khía cạnh.
+   Các tham số hoặc tùy chọn không được chỉ định. Một TS có thể hoàn toàn tự động.
+   chứa đựng, hoặc nó có thể kết hợp vật liệu từ các thông số kỹ thuật khác.
+ 

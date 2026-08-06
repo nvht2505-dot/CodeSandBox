@@ -1,0 +1,15 @@
+body { margin: 0; background: #151515; color: white; font-family: system-ui, sans-serif; }
+button, input { font: inherit; }
+.app-shell { display: flex; flex-direction: column; height: 100vh; width: 100vw; overflow: hidden; }
+header, nav { align-items: center; background: #1e1e1e; border-color: #262626; display: flex; justify-content: space-between; padding: 0.75rem 1rem; }
+main { flex: 1; min-height: 0; overflow: hidden; }
+.panel, .editor, .preview { height: 100%; overflow: auto; }
+[hidden] { display: none; }
+.stack { display: flex; flex-direction: column; gap: 0.75rem; padding: 1rem; }
+.quick-keys { background: #171717; border-top: 1px solid #262626; display: flex; gap: 0.5rem; overflow-x: auto; padding: 0.5rem; }
+.quick-keys button, nav button { background: #262626; border: 0; border-radius: 0.5rem; color: #e5e5e5; padding: 0.5rem 0.75rem; }
+nav { gap: 0.5rem; justify-content: space-around; }
+nav button.active, .primary { background: #40a9ff; color: white; }
+input { background: #262626; border: 1px solid #404040; border-radius: 0.5rem; color: white; padding: 0.65rem; }
+.status { color: #facc15; font-family: monospace; }
+.preview { background: white; }
