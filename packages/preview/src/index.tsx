@@ -1,36 +1,23 @@
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
+import {
+  getCurrentFile,
+  subscribe
+} from "../../../services/editor-state/src";
 
-interface PreviewProps {
-  html?: string;
-}
+export default function Preview() {
+  const [file, setFile] = useState(getCurrentFile());
 
-export default function Preview({
-  html = "<h1>Welcome to CodeSandBox</h1>"
-}: PreviewProps) {
-  const srcDoc = useMemo(() => `
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8" />
-<style>
-body{
-margin:0;
-padding:16px;
-font-family:sans-serif;
-background:#ffffff;
-}
-</style>
-</head>
-<body>
-${html}
-</body>
-</html>
-`, [html]);
+  useEffect(() => subscribe(setFile), []);
+
+  const html =
+    file.language === "html"
+      ? file.content
+      : `<pre style="padding:16px;font-family:monospace;white-space:pre-wrap;">${file.content}</pre>`;
 
   return (
     <iframe
-      title="Preview"
-      srcDoc={srcDoc}
+      title="preview"
+      srcDoc={html}
       style={{
         width: "100%",
         height: "100%",
