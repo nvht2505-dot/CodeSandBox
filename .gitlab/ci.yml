@@ -1,0 +1,13 @@
+stages:
+  - test
+  - unit-tests
+
+include:
+  - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
+  - template: Jobs/Secret-Detection.gitlab-ci.yml
+
+custom job:
+  stage: unit-tests
+  script:
+    - echo "custom job"
