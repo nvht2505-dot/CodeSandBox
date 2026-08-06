@@ -27,5 +27,8 @@
     "typescript-eslint": "8.65.0",
     "vite": "latest",
     "vitest": "latest"
+  },
+  "dependencies": {
+    "@monaco-editor/react": "^4.7.0"
   }
 }
