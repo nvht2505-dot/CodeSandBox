@@ -8,14 +8,21 @@ export interface GitHubUser {
   avatar_url?: string;
 }
 
-export function getGitHubAuthorizeUrl(clientId: string) {
+export function getGitHubAuthorizeUrl(clientId: string, state?: string) {
   const url = new URL(GITHUB_OAUTH_AUTHORIZE_URL);
   url.searchParams.set("client_id", clientId);
   url.searchParams.set("scope", "repo user");
+  if (state) url.searchParams.set("state", state);
   return url.toString();
 }
 
-export async function exchangeGitHubCode(code: string) {
+export interface GitHubTokenResponse {
+  access_token?: string;
+  error?: string;
+  error_description?: string;
+}
+
+export async function exchangeGitHubCode(code: string): Promise<GitHubTokenResponse> {
   const response = await fetch(GITHUB_OAUTH_TOKEN_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json", Accept: "application/json" },

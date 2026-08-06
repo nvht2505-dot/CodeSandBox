@@ -1,6 +1,6 @@
 import { SandpackCodeEditor, SandpackFileExplorer, SandpackPreview, SandpackProvider, useSandpack } from "@codesandbox/sandpack-react";
-import { useEffect, useState } from "react";
-import { createRepo, getGitHubAuthorizeUrl, getGitHubUser, pushFileToGit, type GitHubUser } from "./services/github";
+import { useEffect, useRef, useState } from "react";
+import { createRepo, exchangeGitHubCode, getGitHubAuthorizeUrl, getGitHubUser, pushFileToGit, type GitHubUser } from "./services/github";
 
 type Tab = "files" | "code" | "preview" | "git";
 
@@ -30,9 +30,8 @@ function CodeAutoSaver() {
   return null;
 }
 
-function GitPanel() {
+function GitPanel({ gitToken, onTokenChange }: { gitToken: string | null; onTokenChange: (token: string | null) => void }) {
   const { sandpack } = useSandpack();
-  const [gitToken, setGitToken] = useState(() => localStorage.getItem("github_token"));
   const [user, setUser] = useState<GitHubUser | null>(null);
   const [repoName, setRepoName] = useState("");
   const [commitMsg, setCommitMsg] = useState("Update code from mobile");
@@ -48,7 +47,9 @@ function GitPanel() {
       setStatusText("Thiếu VITE_GITHUB_CLIENT_ID trong cấu hình môi trường.");
       return;
     }
-    window.location.href = getGitHubAuthorizeUrl(clientId);
+    const state = crypto.randomUUID();
+    sessionStorage.setItem(OAUTH_STATE_KEY, state);
+    window.location.href = getGitHubAuthorizeUrl(clientId, state);
   };
 
   const handlePushToNewRepo = async () => {
@@ -76,27 +77,59 @@ function GitPanel() {
         </>
       )}
       {statusText && <p className="status">{statusText}</p>}
-      {gitToken && <button onClick={() => { localStorage.removeItem("github_token"); setGitToken(null); }}>Đăng xuất</button>}
+      {gitToken && <button onClick={() => { localStorage.removeItem("github_token"); onTokenChange(null); }}>Đăng xuất</button>}
     </section>
   );
 }
 
+const OAUTH_STATE_KEY = "github_oauth_state";
+
+function stripOAuthQueryParams() {
+  const params = new URLSearchParams(window.location.search);
+  params.delete("code");
+  params.delete("state");
+  const query = params.toString();
+  window.history.replaceState({}, "", `${window.location.pathname}${query ? `?${query}` : ""}${window.location.hash}`);
+}
+
 export default function App() {
   const [activeTab, setActiveTab] = useState<Tab>("code");
-  const [savedCode, setSavedCode] = useState<string | null>(null);
+  const [savedCode] = useState<string | null>(() => localStorage.getItem("mobile-ide-code"));
+  const [gitToken, setGitToken] = useState<string | null>(() => localStorage.getItem("github_token"));
 
-  useEffect(() => setSavedCode(localStorage.getItem("mobile-ide-code")), []);
+  const oauthCodeConsumed = useRef(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
+    if (!code || oauthCodeConsumed.current) return;
+
+    oauthCodeConsumed.current = true;
+    const expectedState = sessionStorage.getItem(OAUTH_STATE_KEY);
+    sessionStorage.removeItem(OAUTH_STATE_KEY);
+    stripOAuthQueryParams();
+
+    if (!expectedState || params.get("state") !== expectedState) return;
+
+    exchangeGitHubCode(code)
+      .then((data) => {
+        if (!data.access_token) return;
+        localStorage.setItem("github_token", data.access_token);
+        setGitToken(data.access_token);
+      })
+      .catch(() => undefined);
+  }, []);
 
   return (
     <div className="app-shell">
       <header><strong>📦 SandBox Mobile</strong><span>Live</span></header>
-      <SandpackProvider template="react" theme="dark" customSetup={{ files: savedCode ? { "/App.js": { code: savedCode } } : undefined }}>
+      <SandpackProvider template="react" theme="dark" files={savedCode ? { "/App.js": { code: savedCode } } : undefined}>
         <CodeAutoSaver />
         <main>
-          {activeTab === "files" && <section className="panel"><SandpackFileExplorer /></section>}
-          {activeTab === "code" && <section className="editor"><SandpackCodeEditor showTabs showLineNumbers showInlineErrors wrapContent closableTabs={false} /><QuickKeysToolbar /></section>}
-          {activeTab === "preview" && <section className="preview"><SandpackPreview showNavigator showRefreshButton showOpenInCodeSandbox={false} /></section>}
-          {activeTab === "git" && <GitPanel />}
+          <section className="panel" hidden={activeTab !== "files"}><SandpackFileExplorer /></section>
+          <section className="editor" hidden={activeTab !== "code"}><SandpackCodeEditor showTabs showLineNumbers showInlineErrors wrapContent closableTabs={false} /><QuickKeysToolbar /></section>
+          <section className="preview" hidden={activeTab !== "preview"}><SandpackPreview showNavigator showRefreshButton showOpenInCodeSandbox={false} /></section>
+          {activeTab === "git" && <GitPanel gitToken={gitToken} onTokenChange={setGitToken} />}
         </main>
       </SandpackProvider>
       <nav>{(["files", "code", "preview", "git"] as Tab[]).map((tab) => <button className={activeTab === tab ? "active" : ""} key={tab} onClick={() => setActiveTab(tab)}>{tab}</button>)}</nav>
