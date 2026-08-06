@@ -1,15 +1,19 @@
 import Editor from "@monaco-editor/react";
+import { getCurrentFile, saveFile } from "../../../services/editor-state/src";
 
 export default function CodeEditor() {
+  const file = getCurrentFile();
+
   return (
     <Editor
       height="100%"
-      defaultLanguage="typescript"
       theme="vs-dark"
-      defaultValue="// Welcome to CodeSandBox"
+      language={file.language}
+      value={file.content}
+      onChange={(value) => saveFile(value ?? "")}
       options={{
-        minimap: { enabled: true },
         automaticLayout: true,
+        minimap: { enabled: true },
         fontSize: 14,
         tabSize: 2,
         wordWrap: "on"

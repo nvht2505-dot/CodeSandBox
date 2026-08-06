@@ -1,4 +1,5 @@
 import { explorer } from "./data";
+import { openFile } from "../../../services/editor-state/src";
 
 type Item = {
   id: string;
@@ -13,6 +14,12 @@ function Tree({ items }: { items: Item[] }) {
       {items.map((item) => (
         <div key={item.id} style={{ marginLeft: 12 }}>
           <div
+            onClick={() => {
+              if (item.type === "file") {
+                openFile(item.id);
+                window.location.reload();
+              }
+            }}
             style={{
               padding: "6px 8px",
               cursor: "pointer",
