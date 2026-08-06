@@ -14,12 +14,7 @@ function Tree({ items }: { items: Item[] }) {
       {items.map((item) => (
         <div key={item.id} style={{ marginLeft: 12 }}>
           <div
-            onClick={() => {
-              if (item.type === "file") {
-                openFile(item.id);
-                window.location.reload();
-              }
-            }}
+            onClick={() => item.type === "file" && openFile(item.id)}
             style={{
               padding: "6px 8px",
               cursor: "pointer",

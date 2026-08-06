@@ -1,8 +1,15 @@
+import { useEffect, useState } from "react";
 import Editor from "@monaco-editor/react";
-import { getCurrentFile, saveFile } from "../../../services/editor-state/src";
+import {
+  getCurrentFile,
+  saveFile,
+  subscribe
+} from "../../../services/editor-state/src";
 
 export default function CodeEditor() {
-  const file = getCurrentFile();
+  const [file, setFile] = useState(getCurrentFile());
+
+  useEffect(() => subscribe(setFile), []);
 
   return (
     <Editor
@@ -15,8 +22,7 @@ export default function CodeEditor() {
         automaticLayout: true,
         minimap: { enabled: true },
         fontSize: 14,
-        tabSize: 2,
-        wordWrap: "on"
+        tabSize: 2
       }}
     />
   );
