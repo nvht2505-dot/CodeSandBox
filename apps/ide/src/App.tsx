@@ -2,6 +2,7 @@ import Sidebar from "./components/Sidebar";
 import Explorer from "./components/Explorer";
 import CodeEditor from "./components/Editor";
 import AIAgent from "./components/AIAgent";
+import AgentBuild from "./components/AgentBuild";
 import BuildTimeline from "./components/BuildTimeline";
 import Terminal from "./components/Terminal";
 
@@ -32,12 +33,16 @@ export default function App() {
 
           <section className="flex-1 flex flex-col">
 
-            <div className="h-1/2 border-b border-zinc-800">
+            <div className="h-[45%] border-b border-zinc-800">
               <CodeEditor />
             </div>
 
-            <div className="h-1/2 overflow-auto">
+            <div className="h-[35%] border-b border-zinc-800 overflow-auto">
               <AIAgent />
+            </div>
+
+            <div className="h-[20%] overflow-auto">
+              <AgentBuild />
             </div>
 
           </section>
