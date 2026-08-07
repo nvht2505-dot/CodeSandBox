@@ -1,4 +1,5 @@
 import {tools} from "./tool";
+import {send,subscribe,broadcast} from "./bus";
 
 export interface Agent{
 
@@ -8,4 +9,9 @@ export interface Agent{
 
 }
 
-export {tools};
+export {
+  tools,
+  send,
+  subscribe,
+  broadcast
+};

@@ -1,5 +1,8 @@
 import type {Agent} from "../../../services/kernel/src/agent";
-import {tools} from "../../../services/kernel/src/agent";
+import {
+  tools,
+  send
+} from "../../../services/kernel/src/agent";
 import {route} from "../../../services/ai-router/src/router";
 
 const Coder:Agent={
@@ -8,16 +11,23 @@ const Coder:Agent={
 
   async execute(task){
 
-    console.log("[Coder]",task.action);
-
-    const result=await route(task.payload?.prompt ?? "Generate project");
-
-    await tools.workspace.writeFile(
-      "workspace/ai-output.json",
-      JSON.stringify(result,null,2)
+    const result=await route(
+      task.payload?.prompt ?? "Generate project"
     );
 
-    console.log(result);
+    await tools.workspace.writeFile(
+      "workspace/output.ts",
+      result.message
+    );
+
+    send({
+      from:"coder",
+      to:"builder",
+      type:"build",
+      payload:{
+        file:"workspace/output.ts"
+      }
+    });
 
   }
 
