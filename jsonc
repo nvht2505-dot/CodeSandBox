@@ -1,0 +1,12 @@
+{
+  "chat.agent.sandbox.fileSystem.mac": {
+    // Allow writes to the working directory
+    "allowWrite": ["."],
+    // Allow reads from an additional path outside the workspace
+    "allowRead": ["/Users/me/.config/myapp"],
+    // Block writes to specific subdirectories
+    "denyWrite": ["./secrets/"],
+    // Block reads from specific paths
+    "denyRead": ["/etc/passwd"]
+  }
+}

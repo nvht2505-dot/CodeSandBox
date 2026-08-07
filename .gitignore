@@ -36,3 +36,4 @@ google-services.json
 # Node
 node_modules/
 dist/
+service-account-key.json
