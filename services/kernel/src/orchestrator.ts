@@ -1,15 +1,31 @@
+import {createSession} from "./session";
 import {enqueue} from "./queue";
 
 export function runPrompt(prompt:string){
 
-  enqueue({
-    id:crypto.randomUUID(),
-    agent:"planner",
-    action:"plan",
-    payload:{
-      prompt
-    },
-    status:"waiting"
+  const session=createSession(prompt);
+
+  [
+    "planner",
+    "coder",
+    "builder",
+    "debugger",
+    "reviewer",
+    "git",
+    "deploy"
+  ].forEach(agent=>{
+
+    enqueue({
+      id:crypto.randomUUID(),
+      agent,
+      action:"execute",
+      payload:{
+        session,
+        prompt
+      },
+      status:"waiting"
+    });
+
   });
 
 }
