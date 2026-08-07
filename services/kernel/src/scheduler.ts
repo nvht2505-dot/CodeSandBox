@@ -1,4 +1,5 @@
 import {dequeue} from "./queue";
+import {dispatch} from "./manager";
 
 export async function startScheduler(){
 
@@ -8,9 +9,9 @@ export async function startScheduler(){
 
     if(!task) return;
 
-    console.log("[TASK]",task.action);
-
     task.status="running";
+
+    await dispatch(task);
 
     task.status="done";
 
