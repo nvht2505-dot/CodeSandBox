@@ -1,0 +1,60 @@
+injectGatewayToken: true
+image: node:22-slim
+commands:
+  - echo "Installing claude"
+  - npm install -g @anthropic-ai/claude-code
+  - echo "Installing glab"
+  - apt-get update -q && apt-get install -y curl wget gpg git && rm -rf /var/lib/apt/lists/*
+  - curl -sSL https://raw.githubusercontent.com/upciti/wakemeops/main/assets/install_repository | bash
+  - apt-get install -y glab
+  - mkdir -p ~/.config/glab-cli
+  - |
+    cat > ~/.config/glab-cli/config.yml <<EOF
+    hosts:
+      $AI_FLOW_GITLAB_HOSTNAME:
+        token: $AI_FLOW_GITLAB_TOKEN
+        is_oauth2: "true"
+        client_id: "bypass"
+        oauth2_refresh_token: ""
+        oauth2_expiry_date: "01 Jan 50 00:00 UTC"
+        api_host: $AI_FLOW_GITLAB_HOSTNAME
+        user: ClaudeCode
+    check_update: "false"
+    git_protocol: https
+    EOF
+  - chmod 600 ~/.config/glab-cli/config.yml
+  - echo "Configuring git"
+  - git config --global user.email "claudecode@gitlab.com"
+  - git config --global user.name "Claude Code"
+  - echo "Setting up git remote with authentication"
+  - git remote set-url origin https://gitlab-ci-token:$AI_FLOW_GITLAB_TOKEN@$AI_FLOW_GITLAB_HOSTNAME/$AI_FLOW_PROJECT_PATH.git
+  - export ANTHROPIC_AUTH_TOKEN=$AI_FLOW_AI_GATEWAY_TOKEN
+  - export ANTHROPIC_CUSTOM_HEADERS=$AI_FLOW_AI_GATEWAY_HEADERS
+  - export ANTHROPIC_BASE_URL="https://cloud.gitlab.com/ai/v1/proxy/anthropic"
+  - echo "Running claude"
+  - |
+    claude --allowedTools="Bash(glab:*),Bash(git:*)" --permission-mode acceptEdits --verbose --output-format stream-json -p "
+    You are an AI assistant helping with GitLab operations.
+
+    Context: $AI_FLOW_CONTEXT
+    Task: $AI_FLOW_INPUT
+    Event: $AI_FLOW_EVENT
+
+    Please execute the requested task using the available GitLab tools.
+    Be thorough in your analysis and provide clear explanations.
+
+    <important>
+    Use the glab CLI to access data from GitLab. The glab CLI has already been authenticated. You can run the corresponding commands.
+
+    When you complete your work create a new Git branch, if you aren't already working on a feature branch, with the format of 'feature/<short description of feature>' and check in/push code.
+
+    Lastly, after pushing the code, if a merge request doesn't already exist, create a new merge request for the branch and link it to the issue using:
+    glab mr create --title '<title>' --description '<desc>' --source-branch '<branch>'
+
+    If you are asked to summarize a merge request or issue, or asked to provide more information then please post back a note to the merge request / issue so that the user can see it.
+
+    $ADDITIONAL_INSTRUCTIONS
+    </important>
+    "
+variables:
+  - ADDITIONAL_INSTRUCTIONS
