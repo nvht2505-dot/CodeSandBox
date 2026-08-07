@@ -1,6 +1,7 @@
 import Explorer from "./components/Explorer";
-import AIAgent from "./components/AIAgent";
 import CodeEditor from "./components/Editor";
+import AIAgent from "./components/AIAgent";
+import BuildTimeline from "./components/BuildTimeline";
 
 export default function App() {
   return (
@@ -22,17 +23,21 @@ export default function App() {
           <Explorer />
         </aside>
 
-        <section className="flex-1 flex flex-col">
+        <main className="flex-1 flex flex-col">
 
-          <div className="h-1/2 border-b border-zinc-800">
+          <div className="h-[45%]">
             <CodeEditor />
           </div>
 
-          <div className="h-1/2">
+          <div className="h-[35%]">
             <AIAgent />
           </div>
 
-        </section>
+          <div className="flex-1">
+            <BuildTimeline />
+          </div>
+
+        </main>
 
         <aside className="w-[420px] border-l border-zinc-800 p-4">
           Live Preview
