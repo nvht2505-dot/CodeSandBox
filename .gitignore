@@ -37,3 +37,12 @@ google-services.json
 node_modules/
 dist/
 service-account-key.json
+
+# node_modules/
+build/
+dist/
+coverage/
+.DS_Store
+*.log
+.env*
+!.env.example
