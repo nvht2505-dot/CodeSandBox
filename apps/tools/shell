@@ -1,0 +1,20 @@
+/#
+```shell
+
+``` ## Motivation
+- Provide a mobile-first sandbox IDE and a companion docs site in a single monorepo with Vite + React + TypeScript to enable in-browser editing and easy deployment.
+- Support common mobile dev workflows like quick input keys, autosave, project export and optional GitHub sync to let users persist workspaces remotely.
+- Prepare deployable apps with security headers, CNAMEs and DNS/docs to simplify Cloudflare Pages / Vercel deployments.
+
+### Description
+- Introduces a workspace monorepo with root `package.json`, `tsconfig.base.json` and two apps: `apps/ide` (Sandpack-based Mobile IDE) and `apps/docs` (simple docs site), including Vite configs and TypeScript configs for each app.
+- Implements the IDE UI (`apps/ide/src/App.tsx`) with tabs (files, code, preview, git, settings), `QuickKeysToolbar`, autosave (`CodeAutoSaver`), project export (`WorkspaceActions`) and a `GitPanel` that uses `apps/ide/src/services/github.ts` to build OAuth URLs and call GitHub APIs (`getGitHubAuthorizeUrl`, `getGitHubUser`, `createRepo`, `pushFileToGit`).
+- Adds docs site under `apps/docs` with a minimal React app, assets (logo, `index.html`) and security headers/CNAMEs; includes `docs/domain-and-dns.md` describing DNS and environment variable usage (`VITE_GITHUB_CLIENT_ID`).
+- Adds styles, public assets and `_headers` for security on both apps, and example `CNAME` files for sample domains; includes basic unit test `apps/ide/src/services/github.test.ts` for the OAuth URL helper.
+
+### Testing
+- Added a unit test for the GitHub service helper (`apps/ide/src/services/github.test.ts`) that verifies `getGitHubAuthorizeUrl` builds the expected authorize URL.
+- Project test scripts are configured in the root and app `package.json` files (`npm run test`, `vitest`), and the new test was executed via `npm run test` across workspaces and completed successfully.
+
+------
+[Codex Task](https://chatgpt.com/codex/cloud/tasks/task_e_6a730beb10ec833199c885ab8268c7d8)

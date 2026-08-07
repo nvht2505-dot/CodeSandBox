@@ -1,0 +1,6 @@
+{
+  "name": "CodeSandBox ide",
+  "description": "An AI-first Cloud IDE and Agent Command Center with workspace management, multi-agent orchestration, Monaco-style editor, live timeline, and app preview.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

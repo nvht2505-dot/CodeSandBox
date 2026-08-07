@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Dynamic Green Terminal</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background-color: #000;
+      color: #00ff66;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 14px;
+      padding: 20px;
+      overflow: hidden;
+      height: 100vh;
+    }
+    #terminal {
+      white-space: pre-wrap;
+      word-break: break-all;
+      height: 100%;
+      overflow-y: auto;
+    }
+    .cursor {
+      display: inline-block;
+      width: 8px;
+      height: 15px;
+      background-color: #00ff66;
+      animation: blink 1s infinite;
+    }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+  </style>
+</head>
+<body>
+  <div id="terminal"></div><span class="cursor"></span>
+
+  <script>
+    const term = document.getElementById('terminal');
+    const logs = [
+      "Directive => Local Value => Master Value",
+      "sqlite3.extension_dir => no value => no value",
+      "Dynamic Library Support => enabled",
+      "Path to sendmail => /usr/sbin/sendmail -t -i",
+      "assert.active => 1 => 1",
+      "assert.warning => 1 => 1",
+      "default_socket_timeout => 60 => 60",
+      "sysvmsg support => enabled",
+      "Revision => $Id$",
+      "tidy support => enabled",
+      "libTidy Release => 31 October 2006",
+      "Tokenizer Support => enabled",
+      "wddx Session Serializer => enabled",
+      "XML Support => active",
+      "XMLReader => enabled",
+      "xmlrpc => enabled",
+      "core library version => xmlrpc-epi v. 0.51",
+      "~ $ git --version",
+      "usage: git [--version] [--help] [-C <path>]",
+      "start a working area (see also: git help tutorial)",
+      "   clone      Clone a repository into a new directory",
+      "   init       Create an empty Git repository",
+      "work on the current change",
+      "   add        Add file contents to the index",
+      "   commit     Record changes to the repository",
+      "   push       Update remote refs along with associated objects"
+    ];
+
+    let index = 0;
+    function printLine() {
+      if (index < logs.length) {
+        term.innerHTML += logs[index] + "\n";
+        index++;
+      } else {
+        // Tự động sinh dữ liệu ngẫu nhiên tạo hiệu ứng động liên tục
+        const randomHex = Math.random().toString(16).substring(2, 10);
+        term.innerHTML += `[SYS_LOG_${Date.now()}] MEM_USAGE: 0x${randomHex} => Status: OK\n`;
+      }
+      window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    setInterval(printLine, 100); // Chạy dòng mới mỗi 100ms
+  </script>
+</body>
+</html>
