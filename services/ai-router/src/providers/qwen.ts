@@ -1,5 +1,9 @@
-export async function chat(prompt:string){
+export async function qwen(prompt:string){
 
-  return "Qwen: "+prompt;
+  return {
+    provider:"Qwen",
+    model:"qwen3-coder",
+    message:"Qwen generated: "+prompt
+  };
 
 }

@@ -1,22 +1,9 @@
-import Anthropic from "@anthropic-ai/sdk";
+export async function claude(prompt:string){
 
-const client = new Anthropic({
-  apiKey:process.env.ANTHROPIC_API_KEY
-});
-
-export async function chat(prompt:string){
-
-  const res = await client.messages.create({
+  return {
+    provider:"Claude",
     model:"claude-sonnet-4",
-    max_tokens:2048,
-    messages:[
-      {
-        role:"user",
-        content:prompt
-      }
-    ]
-  });
-
-  return res.content[0].text;
+    message:"Claude generated: "+prompt
+  };
 
 }
