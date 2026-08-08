@@ -1,3 +1,28 @@
 
 actions-runner/
 runner/
+
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build output
+dist/
+**/dist/
+
+# Local backups
+src.backup/
+**/src.backup/
+*.backup
+
+# Local credentials
+service-account-key.json
+*.pem
+*.key
+.env
+.env.*
+!.env.example
+
+# Local runners
+actions-runner/
+runner/
