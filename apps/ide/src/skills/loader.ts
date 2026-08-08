@@ -47,6 +47,8 @@ export const skills: Skill[] = Object.entries(files).map(([path, content]) => {
   }
 })
 
+console.log("[SKILLS LOADED]", skills.length, skills.map((s) => s.id))
+
 export function getSkill(id: string) {
   return skills.find((skill) => skill.id === id)
 }
