@@ -1,1 +1,10 @@
 apps/ide/src.backup/
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Local credentials
+service-account-key.json
