@@ -213,7 +213,7 @@ Distributed under the MIT License. Xem file LICENSE để biết chi tiết.
 ---
 
 ## Liên hệ
-- Tác giả: nvht2505-dot
-- Repo: https://github.com/nvht2505-dot/codesandbox
+- Tác giả: ZSKAI-OS
+- Repo: https://github.com/zskai-os/codesandbox
 ---
 
